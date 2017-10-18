@@ -74,20 +74,26 @@ function resetSelects() {
 }
 
 function placeholderColor() {
-
+	var elements = document.getElementsByTagName('input')
+	for(var i = elements.length - 1; i >= 0; --i){
+		if(elements[i].className !== 'text')
+			continue;
+		console.log('lala')
+		console.log(elements[i])
+		elements[i].addEventListener('change', function(event) {
+			console.log(event)
+		})
+	}
 }
 
 window.onload = function() {
 	resetSelects()
+	placeholderColor()
 	var anchors = document.getElementsByTagName('a');
 	root_pages = document.getElementById('pages')
 
 	for(var i = anchors.length - 1; i >= 0; --i) {
 		anchors[i].addEventListener('click', onAnchorClick)
-		var s = document.createElement('div')
-		s.className = "ball"
-		s.id = ""
-		s.appen
 	}
 	var matches = document.URL.match(/#(\/(.+)?)?$/);
 	if(matches === null)
