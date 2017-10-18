@@ -289,6 +289,9 @@ option.placeholder {
 #homepage {
     display: block;
 }
+#about {
+    display: none;
+}
 
 #leaderboard table.leaderboard {
     width: 100%;

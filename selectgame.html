@@ -22,7 +22,7 @@
 						<select class="text" id="adversary"  >
 								<option class="placeholder" value="" selected disabled>Adversary</option>
 								<option value="Computer">Computer</option>
-								<option value="Human">Human</option>
+								<option value="Human" disabled>Human - To be implemented</option>
 						</select>
 						<select class="text" id="playOrder" >
 								<option class="placeholder" value=""  selected disabled>Play order</option>
@@ -42,13 +42,14 @@
 					</form>
 				</div>
 			</div>
-			<div id="leaderboard">
+
+			<div id="big-header">
 				<div class="big-header">
 					<div class ="container">
 						<a href="#/" class="name">nim</a>
 					</div>
 				</div>
-				<div class="container">
+				<div id="leaderboard" class="container">
 					<h2 class="general">Leaderboard</h2>
 					<table class="leaderboard">
 						<thead>
@@ -85,14 +86,7 @@
 							</tbody>
 					</table>
 				</div>
-			</div>
-			<div id="about">
-				<div class="big-header">
-					<div class ="container">
-						<a href="#/" class="name">nim</a>
-					</div>
-				</div>
-				<div class="container">
+				<div id="about" class="container">
 					<h2 class="general">About the game</h2>
 					<p class="general">
 						Nim is a mathematical game of strategy in which two players take turns removing objects from distinct heaps.
@@ -100,6 +94,7 @@
 					<hr class="general">
 				</div>
 			</div>
+
 		</div>
 		<div class="footer" id="footer">
 			<div class="container center">
