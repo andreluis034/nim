@@ -158,7 +158,9 @@ hr.general {
     margin-top: 10%;
     width: 100%;
 }
-
+.button.play {
+    width: 100% !important;
+}    
 .button.login {
     float: left;
 }
@@ -214,11 +216,21 @@ hr.general {
     text-align: center;
 }
 
-.container.log-in input.text{
+.container.log-in .text{
     font-size: 0.9em;
     padding-left: 2em;
     font-family: Helvetica;
     color: #353535;
+    box-sizing: border-box;
+    width: 100%;
+    height: 40px;
+    margin-top: 30px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+option.placeholder {
+    color: #919191;    
 }
 
 
@@ -230,23 +242,7 @@ hr.general {
   color: #919191;
 }
 
-#password_box{
-    box-sizing: border-box;
-    width: 100%;
-    height: 40px;
-    margin-top: 30px;
-    margin-left: auto;
-    margin-right: auto;
-}
 
-#username_box{
-    box-sizing: border-box;
-    width: 100%;
-    height: 40px;   
-    margin-top: 20px;
-    margin-left: auto;
-    margin-right: auto;
-}
 
 .container .button {
     color: #FFF ;
@@ -284,6 +280,14 @@ hr.general {
     border-color: #b4b4b4 !important;
     border: solid 1px;
 
+}
+
+#leaderboard {
+    display: none;
+}
+
+#homepage {
+    display: block;
 }
 
 #leaderboard table.leaderboard {
