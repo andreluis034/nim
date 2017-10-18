@@ -73,9 +73,12 @@ function resetSelects() {
 	}
 }
 
+function placeholderColor() {
+
+}
+
 window.onload = function() {
 	resetSelects()
-	document.getElementById()
 	var anchors = document.getElementsByTagName('a');
 	root_pages = document.getElementById('pages')
 
