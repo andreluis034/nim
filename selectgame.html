@@ -1,109 +1,122 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>NIM</title>
-		<meta charset="utf-8">
-		<!-- Android Chrome theme color -->
-		<meta name="theme-color" content="#3889EA"/>
-		<link rel="stylesheet" type="text/css" href="style/nim.css">
-		<script src="js/navigator.js"></script>
 
-	</head>
-	<body>
-		<div id="pages">
-			<div id="homepage">
-				<div class="container welcome-message">
-					<h1>nim</h1>
-					<h2>A mathematical game of strategy</h2>
+<head>
+	<title>NIM</title>
+	<meta charset="utf-8">
+	<!-- Android Chrome theme color -->
+	<meta name="theme-color" content="#3889EA" />
+	<link rel="stylesheet" type="text/css" href="style/nim.css">
+	<script src="js/leaderboard.js"></script>
+	<script src="js/navigator.js"></script>
+
+</head>
+
+<body>
+	<div id="pages">
+		<div id="homepage">
+			<div class="container welcome-message">
+				<h1>nim</h1>
+				<h2>A mathematical game of strategy</h2>
+			</div>
+
+			<div class="container log-in">
+				<div id='configuration'>
+					<div class='user' href="#">
+						<a style="display:inline-block;text-decoration:none;color: inherit;" href="#/">
+							<img src="img/avatar.png" style="float: left; height: 50px; padding-top:5px; border-radius: 50px;">
+							<span style="line-height: 60px; padding-left: 30px; font-size: 2em; ">Fayaru</spain>
+						</a>
+						<a class="logout" href="#">
+							<i class="fa fa-power-off" style="margin-top:15px; display: block;" aria-hidden="true"></i>
+						</a>
+					</div>
+
+					<form action="#" method="post" onsubmit='return playGame(event)' id="ss">
+						<input class="text" id="boardsize" type="number" name="quantity" min="3" max="20" placeholder="Board size">
+						<select class="text" id="adversary">
+							<option class="placeholder" value="" selected disabled>Adversary</option>
+							<option value="Computer">Computer</option>
+							<option value="Human" disabled>Human - To be implemented</option>
+						</select>
+						<select class="text" id="playOrder">
+							<option class="placeholder" value="" selected disabled>Play order</option>
+							<option value="enemyFirst">Adversary plays first</option>
+							<option value="meFirst">I play first</option>
+						</select>
+						<select class="text" id="gamedifficulty">
+							<option class="placeholder" value="" selected disabled>Game Difficulty</option>
+							<option value="easy">Easy</option>
+							<option value="normal">Normal</option>
+							<option value="heroic">Heroic</option>
+							<option value="legendary">Legendary</option>
+						</select>
+						<div class="form-buttons">
+							<input class="button fullwidth" type="submit" value="Play">
+						</div>
+					</form>
 				</div>
-				<div class="container log-in">
-					<form action="#" method="post">					
-						<input  class="text" id="boardsize" type="number" name="quantity" min="3" max="20" placeholder="Board size">
-						<select class="text" id="adversary"  >
-								<option class="placeholder" value="" selected disabled>Adversary</option>
-								<option value="Computer">Computer</option>
-								<option value="Human" disabled>Human - To be implemented</option>
-						</select>
-						<select class="text" id="playOrder" >
-								<option class="placeholder" value=""  selected disabled>Play order</option>
-								<option value="enemyFirst">Adversary plays first</option>
-								<option value="meFirst">I play first</option>
-						</select>
-						<select class="text" id="gamedifficulty" >
-								<option class="placeholder" value="" selected disabled>Game Difficulty</option>
-								<option value="easy">Easy</option>
-								<option value="normal">Normal</option>
-								<option value="heroic">Heroic</option>
-								<option value="legendary">Legendary</option>
-						</select>
-					  <div class="form-buttons">
-					  	<input class="button play" type="submit" value="Play"> 
-					  </div>
+
+				<div id='login-form'>
+					<form action="#" method="post" onsubmit='return login(event)' id="loginform">
+						<div>
+							<input id="username_box" class="text" type="text" name="username" placeholder="Username">
+						</div>
+						<div>
+							<input id="password_box" class="text" type="password" name="psw" placeholder="Password">
+						</div>
+
+						<div class="form-buttons">
+							<input class="button login" type="submit" value="Login">
+							<input class="button register disabled" type="submit" value="Register">
+						</div>
 					</form>
 				</div>
 			</div>
+		</div>
 
-			<div id="big-header">
-				<div class="big-header">
-					<div class ="container">
-						<a href="#/" class="name">nim</a>
-					</div>
-				</div>
-				<div id="leaderboard" class="container">
-					<h2 class="general">Leaderboard</h2>
-					<table class="leaderboard">
-						<thead>
-							<tr>
-								<th class="user">User</th>
-								<th class="victories">Victories</th>
-							</tr>
-						</thead>
-							<tbody>
-								<tr>
-									<th class="user">Fayaru</th>
-									<th class="victories">1337</th>
-								</tr>
-								<tr>
-									<td class="user">Arukiap</td>
-									<td class="victories">1336</td>
-								</tr>
-								<tr>
-									<td class="user">boilknote</td>
-									<td class="victories">213</td>
-								</tr>
-								<tr>
-									<td class="user">yat0++</td>
-									<td class="victories">ez</td>
-								</tr>
-								<tr>
-									<td class="user">El Rocha</td>
-									<td class="victories">20</td>
-								</tr>
-								<tr>
-									<td class="user">Eirne</td>
-									<td class="victories">10</td>
-								</tr>
-							</tbody>
-					</table>
-				</div>
-				<div id="about" class="container">
-					<h2 class="general">About the game</h2>
-					<p class="general">
-						Nim is a mathematical game of strategy in which two players take turns removing objects from distinct heaps.
-					</p>
-					<hr class="general">
+		<div id="big-header">
+			<div class="big-header">
+				<div class="container">
+					<a href="#/" class="name">nim</a>
 				</div>
 			</div>
-
-		</div>
-		<div class="footer" id="footer">
-			<div class="container center">
-				<a href="#" class="footer-name">nim</a> 
-				<ul class="menu">
-					<li><a href="#/leaderboard">Leaderboard</a></li>
-					<li><a href="#/about">About</a></li>
-				</ul>
+			<div id="leaderboard" class="container">
+				<h2 class="general">Leaderboard</h2>
+				<table class="leaderboard">
+					<thead>
+						<tr>
+							<th class="user">User</th>
+							<th class="victories">Nim Points</th>
+						</tr>
+					</thead>
+					<tbody id="big-leaderboard">
+					</tbody>
+				</table>
+			</div>
+			<div id="about" class="container">
+				<h2 class="general">About the game</h2>
+				<p class="general">
+					Nim is a mathematical game of strategy in which two players take turns removing objects from distinct heaps.
+				</p>
+				<hr class="general">
 			</div>
 		</div>
-	</body>
+
+	</div>
+	<div class="footer" id="footer">
+		<div class="container center">
+			<a href="#/" class="footer-name">nim</a>
+			<ul class="menu">
+				<li>
+					<a href="#/leaderboard">Leaderboard</a>
+				</li>
+				<li>
+					<a href="#/about">About</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</body>
+
 </html>

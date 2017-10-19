@@ -2,27 +2,48 @@
 //url -> div
 var root_pages;
 const selectsToReset = ['adversary', 'playOrder', 'gamedifficulty'];
+var loginInfo = {
+	signedIn: false,
+	username: null
+}
+function homepageOnLoad() {
+	if(!loginInfo.signedIn) {
+		document.getElementById('configuration').style.display = 'none'
+		document.getElementById('login-form').style.display = 'block'
+	}
+	else {
+		document.getElementById('configuration').style.display = 'block'
+		document.getElementById('login-form').style.display = 'none'
+	}
+}
 
 const pages = {
 	"#/leaderboard": {
 		type: "page",
 		divID: "leaderboard",
 		div: null,
+		onload: function() {
+			resetSelects()
+			buildLeaderboard(document.getElementById('big-leaderboard'))
+		}
 	},
 	"#/about": {
 		type: "page",
 		divID: "about",
 		div: null,
+		onload: null
 	},
 	"#": {
 		type: "page",
 		divID: "homepage",
 		div: null,
+		onload: homepageOnLoad
 	},
 	"#/": {
 		type: "page",
 		divID: "homepage",
 		div: null,
+		onload: homepageOnLoad
 	},
 	
 }
@@ -41,6 +62,7 @@ function onAnchorClick(event){
  * @returns {HTMLElement} 
  */
 function getDivForUrl(url) {
+	console.log(`'${url}'`)
 	var div = pages[url].div;
 	if(div === null)
 		div = pages[url].div = document.getElementById(pages[url].divID);
@@ -53,7 +75,7 @@ function getDivForUrl(url) {
 function navigate(url) {
 	if(url === "")
 		url = "#"
-
+	url = url || '#'
 	for(var elem in pages) {
 		getDivForUrl(elem).style.display = 'none'
 	}
@@ -63,8 +85,11 @@ function navigate(url) {
 	var div = getDivForUrl(url)
 	if(pages[url].divID !== "homepage")
 		document.getElementById('big-header').style.display = 'block'
-
+	
+	if(pages[url].onload !== null)
+		pages[url].onload()
 	div.style.display = "block";
+
 }
 
 function resetSelects() {
@@ -73,32 +98,70 @@ function resetSelects() {
 	}
 }
 
-function placeholderColor() {
+function  disabledColor() {
 	var elements = document.getElementsByTagName('input')
 	for(var i = elements.length - 1; i >= 0; --i){
 		if(elements[i].className !== 'text')
 			continue;
 		console.log('lala')
 		console.log(elements[i])
-		elements[i].addEventListener('change', function(event) {
-			console.log(event)
+		elements[i].addEventListener('keyup', (event) => {
+			if(event.target.value.length == 0)
+				event.target.style.color = '#919191'
+			else
+				event.target.style.color = '#353535'
+			console.log(event.target.value.length)
 		})
 	}
 }
 
+function selectChange() {
+	var elements = document.getElementsByTagName('select')
+	for(var i = elements.length - 1; i >= 0; --i) {
+		if(elements[i].className !== 'text')
+			continue;
+		elements[i].addEventListener('change', (event) => {
+			event.target.style.borderColor = '#7A7A7A'
+		})
+	}
+}
+
+function playGame(event) {
+	var elements = document.getElementsByTagName('select')
+	var allGood = true
+	for(var i = elements.length - 1; i >= 0; --i) {
+		if(elements[i].className !== 'text')
+			continue;
+		if(elements[i].selectedIndex === 0) {
+			elements[i].style.borderColor = '#B00'
+			allGood = false			
+		}
+	}
+	if(!allGood)
+		return false
+
+	return false
+}
+
+function login(event) {
+
+	loginInfo.signedIn = true
+	navigate('#')
+	return false
+}
+
 window.onload = function() {
-	resetSelects()
-	placeholderColor()
+	disabledColor()
+	selectChange()
 	var anchors = document.getElementsByTagName('a');
 	root_pages = document.getElementById('pages')
 
 	for(var i = anchors.length - 1; i >= 0; --i) {
 		anchors[i].addEventListener('click', onAnchorClick)
 	}
-	var matches = document.URL.match(/#(\/(.+)?)?$/);
-	if(matches === null)
-		return
-	var loadedPage = matches[0]
-	navigate(loadedPage)
-	console.log(loadedPage)
+	if(window.location.hash === '') {
+		navigate('#')
+		return;
+	}
+	navigate(window.location.hash)
 }
