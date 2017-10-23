@@ -14,6 +14,7 @@ function homepageOnLoad() {
 	else {
 		document.getElementById('configuration').style.display = 'block'
 		document.getElementById('login-form').style.display = 'none'
+		document.getElementById('username-display').innerHTML = loginInfo.username
 	}
 }
 
@@ -32,6 +33,12 @@ const pages = {
 		divID: "about",
 		div: null,
 		onload: null
+	},
+	"#/logout": {
+		type: "page",
+		divID: "homepage",
+		div: null,
+		onload: homepageOnLoad
 	},
 	"#": {
 		type: "page",
@@ -127,6 +134,7 @@ function selectChange() {
 }
 
 function playGame(event) {
+	event.preventDefault()
 	var elements = document.getElementsByTagName('select')
 	var allGood = true
 	for(var i = elements.length - 1; i >= 0; --i) {
@@ -138,17 +146,53 @@ function playGame(event) {
 		}
 	}
 	if(!allGood)
-		return false
+		return 
 
-	return false
 }
 
 function login(event) {
-
+	loginInfo.username = document.getElementById('username_box').value
+	//console.log(document.getElementById('password_box').value)
 	loginInfo.signedIn = true
 	navigate('#')
-	return false
 }
+
+function logout(event) {
+	loginInfo.signedIn = false
+	navigate('#')
+}
+
+function register(event) {
+	//TODO
+}
+
+var FormEvents = [
+	{
+		elemId: 'startGame',
+		eventName: 'submit',
+		callback: playGame
+	},
+	{
+		elemId: 'loginForm',
+		eventName: 'submit',
+		callback: (event) => {event.preventDefault()}
+	},
+	{
+		elemId: 'loginButton',
+		eventName: 'click',
+		callback:login
+	},
+	{
+		elemId: 'registerButton',
+		eventName: 'click',
+		callback: register
+	},
+	{
+		elemId: 'logoutbutton',
+		eventName: 'click',
+		callback: logout
+	}
+]
 
 window.onload = function() {
 	disabledColor()
@@ -156,6 +200,10 @@ window.onload = function() {
 	var anchors = document.getElementsByTagName('a');
 	root_pages = document.getElementById('pages')
 
+	for(var i = FormEvents.length - 1; i >= 0; --i) {
+		var elem = document.getElementById(FormEvents[i].elemId)
+		elem.addEventListener(FormEvents[i].eventName, FormEvents[i].callback)
+	}
 	for(var i = anchors.length - 1; i >= 0; --i) {
 		anchors[i].addEventListener('click', onAnchorClick)
 	}

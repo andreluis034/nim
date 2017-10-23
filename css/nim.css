@@ -1,17 +1,32 @@
 @font-face {
     font-family: novecento_sans_bookbold;
-    src: url(Novecentosans-Bold-webfont.eot);
-    src: url(Novecentosans-Bold-webfont.eot?#iefix) format("embedded-opentype"), url(Novecentosans-Bold-webfont.woff) format("woff"), url(Novecentosans-Bold-webfont.ttf) format("truetype"), url(Novecentosans-Bold-webfont.svg#novecento_sans_bookbold) format("svg");
+    src: url('../fonts/Novecentosans-Bold-webfont.eot');
+    src: url('../fonts/Novecentosans-Bold-webfont.eot') format("embedded-opentype"), url('../fonts/Novecentosans-Bold-webfont.woff') format("woff"), url('../fonts/Novecentosans-Bold-webfont.ttf') format("truetype"), url('../fonts/Novecentosans-Bold-webfont.svg') format("svg");
     font-weight: 400;
     font-style: normal
 }
 @font-face {
     font-family: novecento_sansmedium;
-    src: url(Novecentosans-Medium-webfont.eot);
-    src: url(Novecentosans-Medium-webfont.eot?#iefix) format("embedded-opentype"), url(Novecentosans-Medium-webfont.woff) format("woff"), url(Novecentosans-Medium-webfont.ttf) format("truetype"), url(Novecentosans-Medium-webfont.svg#novecento_sansmedium) format("svg");
+    src: url('../fonts/Novecentosans-Medium-webfont.eot');
+    src: url('../fonts/Novecentosans-Medium-webfont.eot') format("embedded-opentype"), url('../fonts/Novecentosans-Medium-webfont.woff') format("woff"), url('../fonts/Novecentosans-Medium-webfont.ttf') format("truetype"), url('../fonts/Novecentosans-Medium-webfont.svg') format("svg");
     font-weight: 400;
     font-style: normal
 }
+@font-face {
+    font-family: 'FontAwesome';
+    src: url('../fonts/fontawesome-webfont.eot');
+    src: url('../fonts/fontawesome-webfont.eot') format('embedded-opentype'), url('../fonts/fontawesome-webfont.woff2') format('woff2'), url('../fonts/fontawesome-webfont.woff') format('woff'), url('../fonts/fontawesome-webfont.ttf') format('truetype'), url('../fonts/fontawesome-webfont.svg') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.fa-icon {
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+}
+
 html {
     min-height: 100%;
     position: relative;
@@ -171,7 +186,7 @@ hr.general {
     height: 60px;
 }
 
-.container.log-in  .logout {
+.container.log-in .logout {
     float: right;
     text-decoration: none;
     color: #FFF;
@@ -180,6 +195,27 @@ hr.general {
     height: 60px;
     width: 60px;
     text-align: center;
+    box-sizing: border-box; 
+    padding-top:15px; 
+    user-select: none;
+    cursor: pointer;
+}
+
+#configuration > .user > .profile {
+    display:inline-block;
+    text-decoration:none;
+    color: inherit;
+}
+#configuration > .user > .profile > img{
+    float: left; 
+    height: 50px; 
+    padding-top:5px; 
+    border-radius: 50px;
+}    
+#configuration > .user > .profile > span {
+    line-height: 60px; 
+    padding-left: 30px; 
+    font-size: 2em;
 }
 
 .container.log-in > .user:hover {

@@ -6,7 +6,7 @@
 	<meta charset="utf-8">
 	<!-- Android Chrome theme color -->
 	<meta name="theme-color" content="#3889EA" />
-	<link rel="stylesheet" type="text/css" href="style/nim.css">
+	<link rel="stylesheet" type="text/css" href="css/nim.css">
 	<script src="js/leaderboard.js"></script>
 	<script src="js/navigator.js"></script>
 
@@ -23,16 +23,15 @@
 			<div class="container log-in">
 				<div id='configuration'>
 					<div class='user' href="#">
-						<a style="display:inline-block;text-decoration:none;color: inherit;" href="#/">
-							<img src="img/avatar.png" style="float: left; height: 50px; padding-top:5px; border-radius: 50px;">
-							<span style="line-height: 60px; padding-left: 30px; font-size: 2em; ">Fayaru</spain>
+						<a class="profile" href="#/">
+							<img src="img/avatar.png">
+							<span id="username-display">Fayaru</spain>
 						</a>
-						<a class="logout" href="#">
-							<i class="fa fa-power-off" style="margin-top:15px; display: block;" aria-hidden="true"></i>
-						</a>
+						<div id="logoutbutton" class="logout fa-icon" href="#/logout">
+							&#xF011;
+						</div>
 					</div>
-
-					<form action="#" method="post" onsubmit='return playGame(event)' id="ss">
+					<form action="#" method="post" id="startGame">
 						<input class="text" id="boardsize" type="number" name="quantity" min="3" max="20" placeholder="Board size">
 						<select class="text" id="adversary">
 							<option class="placeholder" value="" selected disabled>Adversary</option>
@@ -58,7 +57,7 @@
 				</div>
 
 				<div id='login-form'>
-					<form action="#" method="post" onsubmit='return login(event)' id="loginform">
+					<form action="#" method="post" id="loginForm">
 						<div>
 							<input id="username_box" class="text" type="text" name="username" placeholder="Username">
 						</div>
@@ -67,8 +66,8 @@
 						</div>
 
 						<div class="form-buttons">
-							<input class="button login" type="submit" value="Login">
-							<input class="button register disabled" type="submit" value="Register">
+							<input class="button login" type="submit" value="Login" id="loginButton"> 
+							<input class="button register disabled" type="submit" value="Register" id="registerButton">
 						</div>
 					</form>
 				</div>
