@@ -25,8 +25,8 @@ function onMyTurnToPlay() {
 	}
 }
 
-function bigHeaderHandler(){
-	if(playing /*AND NOT INSIDE THE GAME*/){
+function bigHeaderHandler(show){
+	if(playing && show/*AND NOT INSIDE THE GAME*/){
 		document.getElementById('returnToGame').style.display='block'
 		document.getElementById('your-turn').style.display='block'
 	}
@@ -38,37 +38,35 @@ function bigHeaderHandler(){
 
 const pages = {
 	"#/leaderboard": {
-		type: "page",
 		divID: "leaderboard",
 		div: null,
 		onload: function() {
 			resetSelects()
 			buildLeaderboard(document.getElementById('big-leaderboard'))
-			bigHeaderHandler()
+			bigHeaderHandler(true)
 		}
 	},
 	"#/about": {
-		type: "page",
 		divID: "about",
 		div: null,
 		onload: function() {
-			bigHeaderHandler()
+			bigHeaderHandler(true)
 		}
 	},
-	"#/logout": {
-		type: "page",
-		divID: "homepage",
+	"#/game": {
+		divID: "game-content",
 		div: null,
-		onload: homepageOnLoad
+		onload: function() {
+			OnBoardPageLoad()
+			bigHeaderHandler(false)
+		}
 	},
 	"#": {
-		type: "page",
 		divID: "homepage",
 		div: null,
 		onload: homepageOnLoad
 	},
 	"#/": {
-		type: "page",
 		divID: "homepage",
 		div: null,
 		onload: homepageOnLoad
@@ -168,7 +166,7 @@ function playGame(event) {
 	}
 	if(!allGood)
 		return 
-
+	navigate('#/game')
 }
 
 function login(event) {
