@@ -51,6 +51,7 @@ function game_finished(code){
 	points_board.style.display = "block";
 
 	var h1 = document.createElement('h1');
+	h1.className ="title"
 	points_board.append(h1);
 	var hr = document.createElement('hr');
 	points_board.append(hr);
@@ -130,16 +131,20 @@ function game_finished(code){
 
 	//create buttons now
 
-	var play_again_button = document.createElement('div');
+	//							<input class="button fullwidth" type="submit" value="Play">
+
+	var play_again_button = document.createElement('input');
 	play_again_button.className = "button";
 	play_again_button.id = "play_again_button";
-	play_again_button.innerHTML = "Play again";
+	play_again_button.type = "submit";
+	play_again_button.value = "Play again";
 	points_board.append(play_again_button);
 
-	var change_settings_button = document.createElement('div');
+	var change_settings_button = document.createElement('input');
 	change_settings_button.className = "button";
 	change_settings_button.id = "change_settings_button"; //to have same settings as above button
-	change_settings_button.innerHTML = "Change settings";
+	change_settings_button.type = "submit";
+	change_settings_button.value = "Change settings";
 	points_board.append(change_settings_button);
 }
 
