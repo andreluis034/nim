@@ -6,6 +6,7 @@ var loginInfo = {
 	signedIn: false,
 	username: null
 }
+var playing = false
 function homepageOnLoad() {
 	if(!loginInfo.signedIn) {
 		document.getElementById('configuration').style.display = 'none'
@@ -18,6 +19,23 @@ function homepageOnLoad() {
 	}
 }
 
+function onMyTurnToPlay() {
+	if(/*not in game*/false ) {
+
+	}
+}
+
+function bigHeaderHandler(){
+	if(playing /*AND NOT INSIDE THE GAME*/){
+		document.getElementById('returnToGame').style.display='block'
+		document.getElementById('your-turn').style.display='block'
+	}
+	else {
+		document.getElementById('returnToGame').style.display='none'		
+		document.getElementById('your-turn').style.display='none'
+	}
+}
+
 const pages = {
 	"#/leaderboard": {
 		type: "page",
@@ -26,13 +44,16 @@ const pages = {
 		onload: function() {
 			resetSelects()
 			buildLeaderboard(document.getElementById('big-leaderboard'))
+			bigHeaderHandler()
 		}
 	},
 	"#/about": {
 		type: "page",
 		divID: "about",
 		div: null,
-		onload: null
+		onload: function() {
+			bigHeaderHandler()
+		}
 	},
 	"#/logout": {
 		type: "page",

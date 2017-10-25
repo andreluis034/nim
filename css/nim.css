@@ -58,16 +58,33 @@ body {
     margin-bottom: 30px;
     border-bottom: 1px solid #DFDFDF;
     background: inherit;
+    font-family: novecento_sans_bookbold, Arial, Helvetica, sans-serif;
+}
+.big-header .vertical-center {
+    margin-top: 12px;    
 }
 
+.big-header .return {
+    float:right;
+    font-size: 20px;
+    line-height: 1.1;
+    color: #515151;
+    user-select: none;
+    cursor: pointer;
+}
+.big-header .return:hover {
+    color: #000;
+}
+.big-header .return .your-turn{
+    color: #3889EA;
+    font-size: 16px;    
+}
 .big-header .name {
     text-decoration: none;
     color: #3889EA;
-    font-family: novecento_sans_bookbold, Arial, Helvetica, sans-serif;
-    font-size: 36px;
     font-weight: 500;
+    font-size: 36px;
     line-height: 1.1;
-    margin-top: 12px;
     display: inline-block;
 }
 
