@@ -10,11 +10,27 @@ var verbose = false;
 var human_plays; // number of plays the human did.
 var ai_plays;
 
+var difficulties= {
+	easy: 25,
+	normal: 50,
+	heroic: 75,
+	legendary: 100
+}
+
 var matrix = new Array(how_many_columns);
 var columns = new Array(how_many_columns);
 var limits = new Array(how_many_columns);
 
-OnBoardPageLoad = function() {
+function initialize(columns, gameType, playingFirst, diff) {
+	how_many_columns = columns;
+	matrix = new Array(how_many_columns);
+	columns = new Array(how_many_columns);
+	limits = new Array(how_many_columns);
+	difficulty = difficulties[diff];
+	
+}
+OnBoardPageLoad = function(columns, gameType, playingFirst, diff) {
+	initialize(columns, gameType, playingFirst, diff);
 	prepare_game();
 	create_canvas();
 }

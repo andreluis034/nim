@@ -57,7 +57,13 @@ const pages = {
 		divID: "game-content",
 		div: null,
 		onload: function() {
-			OnBoardPageLoad()
+			var form = document.getElementById('startGame')
+			var children = form.children
+			var columns = parseInt(children[0].value)
+			var gameType = parseInt(children[0].value) //not used for now
+			var playingFirst = parseInt(children[0].value)
+			var difficulty = parseInt(children[0].value)
+			OnBoardPageLoad(columns, gameType, playingFirst, difficulty)
 			bigHeaderHandler(false)
 		}
 	},
