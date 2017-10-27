@@ -593,7 +593,13 @@ option.placeholder {
     color: red;
     font-family: novecento_sansmedium, Arial, Helvetica, sans-serif;
 }
+#button_yes:hover {
+    background-color: #e4431f;
+}
 
+#button_no:hover {
+    background-color: #3889EA;
+}
 
 #button_yes {
     background-color: #b4b4b4;
