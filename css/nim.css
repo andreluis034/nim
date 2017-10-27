@@ -110,7 +110,9 @@ body {
     font-size: 1.3em;
     line-height: 1;
 }
-
+.leaderboard > thead > tr > th {
+    color: #3889EA;
+}
 .header .user {
     float: right;
     border-left: 1px solid;
