@@ -166,15 +166,20 @@ function selectChange() {
 
 function playGame(event) {
 	event.preventDefault()
-	var elements = document.getElementsByTagName('select')
+	var elements = document.getElementById('startGame').children
 	var allGood = true
 	for(var i = elements.length - 1; i >= 0; --i) {
-		if(elements[i].className !== 'text')
+		if(elements[i].tagName === 'DIV')
 			continue;
-		if(elements[i].selectedIndex === 0) {
-			elements[i].style.borderColor = '#B00'
-			allGood = false			
+		console.log(elements[i].tagName)
+		console.log(elements[i].selectedIndex)
+		console.log(elements[i].value)
+		if((elements[i].tagName === "SELECT" && elements[i].selectedIndex === 0) 
+			|| (elements[i].tagName === "INPUT" && elements[i].value === "")){
+				elements[i].style.borderColor = '#B00'
+				allGood = false			
 		}
+
 	}
 	if(!allGood)
 		return 
