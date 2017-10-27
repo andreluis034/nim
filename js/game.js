@@ -228,7 +228,8 @@ function game_finished(code){
 	//create buttons now
 	
 	//							<input class="button fullwidth" type="submit" value="Play">
-	
+	var button_container = document.createElement('div')
+	button_container.className = "buttons"
 	var play_again_button = document.createElement('input');
 	play_again_button.className = "button";
 	play_again_button.id = "play_again_button";
@@ -247,7 +248,9 @@ function game_finished(code){
 		navigate('#')
 	})
 	change_settings_button.value = "Change settings";
-	points_board.append(change_settings_button);
+	button_container.appendChild(play_again_button)
+	button_container.appendChild(change_settings_button)
+	points_board.append(button_container);
 	
 }
 
@@ -321,6 +324,7 @@ function prepare_game(){
 	}
 	
 	write_turn();
+	clean_alert();
 	initialize_matrix();
 	initialize_playcounters();
 	initialize_confirmation("give up?");

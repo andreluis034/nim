@@ -89,6 +89,10 @@ const pages = {
  * @param {MouseEvent} event
  */
 function onAnchorClick(event){
+	if(event.target.hash === '#/logout') {
+		navigate('#')
+		return;
+	}
 	navigate(event.target.hash)
 }
 
@@ -123,6 +127,7 @@ function navigate(url) {
 		document.getElementById('big-header').style.display = 'block'
 	
 	currentPage = url
+	window.location.hash = url;
 	if(pages[url].onload !== null)
 		pages[url].onload()
 	div.style.display = "block";
@@ -223,7 +228,7 @@ var FormEvents = [
 		callback: (event) => { navigate('#/game') }
 	}
 ]
-
+var initialPageNotAllowed = ['#/game', '#/logout']
 window.onload = function() {
 	disabledColor()
 	selectChange()
@@ -237,6 +242,9 @@ window.onload = function() {
 	for(var i = anchors.length - 1; i >= 0; --i) {
 		anchors[i].addEventListener('click', onAnchorClick)
 	}
+	if(initialPageNotAllowed.indexOf(window.location.hash) > -1)
+		window.location.hash = ''
+	
 	if(window.location.hash === '') {
 		navigate('#')
 		return;

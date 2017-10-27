@@ -25,7 +25,9 @@
     font: normal normal normal 14px/1 FontAwesome;
     font-size: inherit;
 }
-
+.fa-logout:before {
+    content: "\f011";
+  }
 html {
     min-height: 100%;
     position: relative;
@@ -253,7 +255,7 @@ hr.general {
     text-align: center;
     box-sizing: border-box; 
     padding-top:15px; 
-    cursor: pointer;
+    display: block;
 }
 
 #configuration > .user > .profile {
@@ -515,7 +517,11 @@ option.placeholder {
     border: 1px solid #e8e8e8;
     background-color: #ffffff;
 }
-
+#points_board > .buttons {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
 #points_board > * {
     color: #b4b4b4;
 }
