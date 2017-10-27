@@ -511,7 +511,6 @@ option.placeholder {
 #points_board{
     overflow: hidden;
     width: 40%;
-    height: 500px;
     margin-left: auto;
     margin-right: auto;
     font-family: Arial, Helvetica, sans-serif;
@@ -523,6 +522,8 @@ option.placeholder {
     width: 80%;
     margin-left: auto;
     margin-right: auto;
+    margin-top: 10px;
+    margin-bottom: 4em;
 }
 #points_board > * {
     color: #b4b4b4;

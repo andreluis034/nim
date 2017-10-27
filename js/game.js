@@ -189,7 +189,7 @@ function game_finished(code){
 		columns_mult = "n/a";
 		plays_mult = "n/a";
 		h3_5.innerHTML = "Total points = "+"<b>"+total_points+"</b>";
-		document.getElementById("points_board").style.height="450px"; // adjust for a smaller windows size, as the lost/win multiplier isnt applicable here
+		//document.getElementById("points_board").style.height="450px"; // adjust for a smaller windows size, as the lost/win multiplier isnt applicable here
 		break;
 		case "ai":
 		h1.innerHTML = "the ai won the game.";
