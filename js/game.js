@@ -94,13 +94,13 @@ function initialize_confirmation(message){
 	
 	var title = document.createElement('h1');
 	title.innerHTML = message;
-	confirmation.append(title);
+	confirmation.appendChild(title);
 	
-	confirmation_container.append(confirmation);
+	confirmation_container.appendChild(confirmation);
 	
 	confirmation_container.style.visibility = "hidden";
 	
-	game.append(confirmation_container);
+	game.appendChild(confirmation_container);
 	
 	var button_yes = document.createElement('div');
 	var button_no = document.createElement('div');
@@ -118,8 +118,8 @@ function initialize_confirmation(message){
 	
 	button_no.addEventListener("click",clear_confirmation);
 	
-	confirmation.append(button_yes);
-	confirmation.append(button_no);
+	confirmation.appendChild(button_yes);
+	confirmation.appendChild(button_no);
 	
 	
 }
@@ -147,12 +147,12 @@ function game_finished(code){
 	
 	var h1 = document.createElement('h1');
 	h1.className ="title"
-	points_board.append(h1);
+	points_board.appendChild(h1);
 	var hr = document.createElement('hr');
-	points_board.append(hr);
+	points_board.appendChild(hr);
 	var h2 = document.createElement('h2');
 	h2.innerHTML = "Points";
-	points_board.append(h2);
+	points_board.appendChild(h2);
 	
 	var h3_1 = document.createElement('h3');
 	var h3_2 = document.createElement('h3');
@@ -169,7 +169,7 @@ function game_finished(code){
 	<h3>Total points = </h3>
 	*/			
 	
-	//container.append(button_giveup);
+	//container.appendChild(button_giveup);
 	
 	//I STAYED HERE....
 	
@@ -218,11 +218,11 @@ function game_finished(code){
 	
 	
 	
-	points_board.append(h3_1);
-	points_board.append(h3_2);
-	points_board.append(h3_3);
-	points_board.append(h3_4);
-	points_board.append(h3_5);
+	points_board.appendChild(h3_1);
+	points_board.appendChild(h3_2);
+	points_board.appendChild(h3_3);
+	points_board.appendChild(h3_4);
+	points_board.appendChild(h3_5);
 	
 	
 	//create buttons now
@@ -238,7 +238,7 @@ function game_finished(code){
 		OnBoardPageLoad(settings.columns,settings.gameType,settings.playingFirst,settings.diff,settings.username)
 	})
 	play_again_button.value = "Play again";
-	points_board.append(play_again_button);
+	points_board.appendChild(play_again_button);
 	
 	var change_settings_button = document.createElement('input');
 	change_settings_button.className = "button";
@@ -250,7 +250,7 @@ function game_finished(code){
 	change_settings_button.value = "Change settings";
 	button_container.appendChild(play_again_button)
 	button_container.appendChild(change_settings_button)
-	points_board.append(button_container);
+	points_board.appendChild(button_container);
 	
 }
 
@@ -471,38 +471,19 @@ function create_canvas(){
 	canvas.id = "verbose";
 	verbose_text.className = "verbose_text";
 	verbose_text.id = "verbose_chat";
-	canvas.append(verbose_text);
+	canvas.appendChild(verbose_text);
 	canvas.style.display = "none";
-	container.append(canvas);
+	container.appendChild(canvas);
 	
 	
-	//place verbose mode button:
-	
-	
+	//place verbose mode button	
 	var button = document.createElement('div');
 	button.className = "button";
 	button.id = "verbose_button";
 	button.innerHTML = "Verbose Mode";
 	button.addEventListener("click",verboseButton);
-	container.append(button);
-	
-	/*<div class="button" id="verbose_button">
-	Verbose Mode
-	</div>
-	*/
-	
-	
-	
-	
-	
-	
-	/*<div class="canvas" id="verbose">
-	<div class="verbose_text" id="verbose_chat">
-	
-	</div>
-	</div>
-	*/
-	
+	container.appendChild(button);
+
 	//Now its time for the give up button:
 	
 	var button_giveup = document.createElement('div');
@@ -510,7 +491,7 @@ function create_canvas(){
 	button_giveup.id = "giveup_button";
 	button_giveup.innerHTML = "Give up";
 	button_giveup.addEventListener("click",giveUpButton);
-	container.append(button_giveup);
+	container.appendChild(button_giveup);
 	
 	
 	//
