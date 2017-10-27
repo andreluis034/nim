@@ -69,6 +69,75 @@ function get_nimSum(){
 	return nimSum;
 }
 
+
+function show_confirmation(){
+	var confirmation_container = document.getElementById("confirmation_container");
+	confirmation_container.style.visibility = "visible";
+}
+
+function clear_confirmation(){
+	var confirmation_container = document.getElementById("confirmation_container");
+	confirmation_container.style.visibility = "hidden";
+}
+
+function initialize_confirmation(message){
+
+	console.log(message);
+	var game = document.getElementById("game");
+	var confirmation_container = document.createElement('div');
+	confirmation_container.id = "confirmation_container";
+
+	var confirmation = document.createElement('div');
+	confirmation.id = "confirmation";
+
+	var title = document.createElement('h1');
+	title.innerHTML = message;
+	confirmation.append(title);
+
+	confirmation_container.append(confirmation);
+
+	confirmation_container.style.visibility = "hidden";
+
+	game.append(confirmation_container);
+
+	var button_yes = document.createElement('div');
+	var button_no = document.createElement('div');
+
+	button_yes.id = "button_yes";
+	button_no.id = "button_no";
+
+	button_yes.className = "button";
+	button_no.className = "button";
+
+	button_yes.innerHTML = "yes";
+	button_no.innerHTML = "no";
+
+	button_yes.addEventListener("mouseover",hoverButton);
+	button_yes.addEventListener("mouseout",unHoverButton);
+	button_yes.addEventListener("click",giveUp);
+
+	button_no.addEventListener("mouseover",hoverButton);
+	button_no.addEventListener("mouseout",unHoverButton);
+	button_no.addEventListener("click",clear_confirmation);
+
+	confirmation.append(button_yes);
+	confirmation.append(button_no);
+
+
+}
+
+
+
+function clean_alert(){
+	var alert = document.getElementById("alert_message");
+	alert.innerHTML = "";
+}
+
+function show_alert(message){
+	var alert = document.getElementById("alert_message");
+	alert.innerHTML = message;
+}
+
 function game_finished(code){
 	playingGame = false;
 	document.body.style.cursor = "default";
@@ -256,6 +325,7 @@ function prepare_game(){
 	write_turn();
 	initialize_matrix();
 	initialize_playcounters();
+	initialize_confirmation("give up?");
 
 	//num = 3;
 	//console.log(("00000000"+num.toString(2)).slice(-8));
@@ -311,7 +381,7 @@ function OnMouseOut(event){
 
 
 function giveUpButton(event){
-	if(confirm("Do you really want to give up?")){
+	show_confirmation("give up?");
 		//console.log("GIVE UP");
 		game_finished("giveup");
 	}
@@ -387,6 +457,7 @@ function create_canvas(){
 	var verbose_chat_width_px = tmp+"px";
 	document.getElementById("canvas").style.width=table_width_px;
 	document.getElementById("table").style.width=table_width_px;
+	document.getElementById("alert_message").style.width=table_width_px;
 
 	//TIME TO WORK WITH THE CHAT NOW:
 	var container = document.getElementById("game");
@@ -661,6 +732,7 @@ function play_AI(){
 	myTurn=!myTurn;
 	write_turn();
 
+	clean_alert();
 	//print_state();
 }
 
@@ -671,7 +743,7 @@ function OnClickMouse(event){
 	var i = parseInt(id.split("-")[1]);
 	if(j>limits[i]){
 		if(myTurn!=true){
-			alert("Please wait for the AI to play.");
+			show_alert("Please wait for the AI to play.");
 			return;
 		}
 
