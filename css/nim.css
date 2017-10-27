@@ -172,6 +172,39 @@ hr.general {
     margin-top: 10%;
     width: 100%;
 }
+
+#verbose_button:hover {
+    background-color: #3889EA;
+    
+}
+#verbose_button {
+    background-color: #b4b4b4;
+    line-height: 23px;
+    margin-top: 5px;
+    margin-left: auto;
+    margin-right: auto;
+    height: 20px;
+}
+#giveup_button:hover {
+    background-color: #e4431f ;
+}
+#giveup_button {
+    background-color: #b4b4b4;
+    line-height: 45px; 
+    margin-top: 5px;
+    margin-left: auto;
+    margin-right: auto;
+    height: 50px;
+}
+
+#play_again_button {
+    float: left;
+    text-align: center;
+}
+#change_settings_button {
+    float: right;
+    text-align: center;
+}
 .button.fullwidth {
     width: 100% !important;
 }    
@@ -276,7 +309,7 @@ option.placeholder {
 .button {
     cursor: pointer;
     color: #FFF !important;
-    background: #3889EA !important;
+    background: #3889EA;
     font-weight: bolder;
     text-decoration: none;
     font-size: 1em;
@@ -284,11 +317,12 @@ option.placeholder {
     width: 49%;
     line-height: 3em;
     border:  0px;
+    cursor: pointer;
 }
 
 .button.disabled {
     background: #7A7A7A;
-    cursor: not-allowed;
+    cursor: not-allowed !important;
 }
 .container.register {
     width: 100%;
@@ -308,6 +342,7 @@ option.placeholder {
     display: none;
 }
 #configuration {
+    display: none;
 }
 
 #leaderboard table.leaderboard {
@@ -418,6 +453,14 @@ option.placeholder {
     height: 100px;
     width: 100px;
     background-color: #ffffff; 
+    cursor: pointer;
+}
+
+.my-turn {
+    color: #3889EA;
+}
+.enemy-turn {
+    color: #b4b4b4;
 }
 
 #table{
@@ -425,32 +468,6 @@ option.placeholder {
     margin-right: auto;
 }
 
-#verbose_button {
-    background-color: #b4b4b4 !important;
-    line-height: 23px;
-    margin-top: 5px;
-    margin-left: auto;
-    margin-right: auto;
-    height: 20px;
-}
-
-#giveup_button {
-    background-color: #b4b4b4 !important;
-    line-height: 45px; 
-    margin-top: 5px;
-    margin-left: auto;
-    margin-right: auto;
-    height: 50px;
-}
-
-#play_again_button {
-    float: left;
-    text-align: center;
-}
-#change_settings_button {
-    float: right;
-    text-align: center;
-}
 
 #verbose-messages {
     vertical-align: top;
@@ -522,7 +539,7 @@ option.placeholder {
 }
 
 #points_board  b {
-   color: #3889EA; 
+    color: #3889EA; 
 }
 
 

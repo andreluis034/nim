@@ -9,6 +9,7 @@ var table_width;
 var verbose = false;
 var human_plays; // number of plays the human did.
 var ai_plays;
+var playingGame = false;
 
 var difficulties= {
 	easy: 25,
@@ -20,16 +21,26 @@ var difficulties= {
 var matrix = new Array(how_many_columns);
 var columns = new Array(how_many_columns);
 var limits = new Array(how_many_columns);
+var settings = {
 
-function initialize(columns, gameType, playingFirst, diff) {
-	how_many_columns = columns;
+}
+
+function initialize(columns2, gameType, playingFirst, diff) {
+	how_many_columns = columns2;
 	matrix = new Array(how_many_columns);
 	columns = new Array(how_many_columns);
 	limits = new Array(how_many_columns);
 	difficulty = difficulties[diff];
+	myTurn = (playingFirst === "meFirst")
 	
 }
-OnBoardPageLoad = function(columns, gameType, playingFirst, diff) {
+OnBoardPageLoad = function(columns, gameType, playingFirst, diff, username) {
+	playingGame = true
+	settings.columns = columns
+	settings.gameType = gameType
+	settings.playingFirst = playingFirst
+	settings.diff = diff
+	settings.username = username
 	initialize(columns, gameType, playingFirst, diff);
 	prepare_game();
 	create_canvas();
@@ -59,11 +70,12 @@ function get_nimSum(){
 }
 
 function game_finished(code){
-
+	playingGame = false;
 	document.body.style.cursor = "default";
 
 	document.getElementById("game").style.display = "none";
 	var points_board = document.getElementById("points_board");
+	points_board.innerHTML = ""
 	points_board.style.display = "block";
 
 	var h1 = document.createElement('h1');
@@ -130,6 +142,7 @@ function game_finished(code){
         break;
 	}
 
+	OnGameFinished(settings.username, total_points)
 	h3_1.innerHTML = "Difficulty multiplier = <b>"+difficulty_mult+"</b>";
 
 	h3_2.innerHTML = "Plays multiplier = <b>"+plays_mult+"</b>";
@@ -153,6 +166,9 @@ function game_finished(code){
 	play_again_button.className = "button";
 	play_again_button.id = "play_again_button";
 	play_again_button.type = "submit";
+	play_again_button.addEventListener('click', (event) => {
+		OnBoardPageLoad(settings.columns,settings.gameType,settings.playingFirst,settings.diff,settings.username)
+	})
 	play_again_button.value = "Play again";
 	points_board.append(play_again_button);
 
@@ -160,8 +176,12 @@ function game_finished(code){
 	change_settings_button.className = "button";
 	change_settings_button.id = "change_settings_button"; //to have same settings as above button
 	change_settings_button.type = "submit";
+	change_settings_button.addEventListener('click', (event) => {
+		navigate('#')
+	})
 	change_settings_button.value = "Change settings";
 	points_board.append(change_settings_button);
+
 }
 
 function print_state(){
@@ -222,6 +242,16 @@ function print_state(){
 
 
 function prepare_game(){
+	document.getElementById("game").style.display = "block";
+	document.getElementById("points_board").style.display = "none";
+	document.getElementById("table").innerHTML = ''
+	var toDelete = ['verbose', 'verbose_button', 'giveup_button']
+	for(var i = 0; i < toDelete.length; ++i) {
+		var elem = document.getElementById(toDelete[i])
+		if(elem === null)
+			continue;
+		elem.parentNode.removeChild(elem)
+	}
 
 	write_turn();
 	initialize_matrix();
@@ -263,10 +293,7 @@ function OnMouseIn(event){
 	var id = elem.id;
 	var j = parseInt(id.split("-")[0]);
 	var i = parseInt(id.split("-")[1]);
-	//console.log("ENTER: " + i + "-" + j);
 	if(j>limits[i]){
-		document.body.style.cursor = "pointer";
-		//console.log("PARA PINTAR: " + id);
 		hover_paint(j,i);
 	}
 }
@@ -278,44 +305,10 @@ function OnMouseOut(event){
 	var j = parseInt(id.split("-")[0]);
 	var i = parseInt(id.split("-")[1]);
 	if(j>limits[i]){
-		document.body.style.cursor = "default";
-		//console.log(id);
 		unhover_paint(j,i);
 	}
 }
 
-/*
-function hoverGiveUp(event){
-
-}
-
-function unHoverGiveUp(event){
-
-}*/
-
-function hoverButton(event){
-
-	var elem = event.target;
-	if(elem.id == "verbose_button"){
-		elem.style.backgroundColor = "#3889EA";	
-	}
-	else{
-		elem.style.backgroundColor = "#e4431f";
-	}
-	document.body.style.cursor = "pointer";
-}
-
-function unHoverButton(event){
-	var elem = event.target;
-
-	if(verbose==false && elem.id == "verbose_button"){
-		elem.style.backgroundColor = "#b4b4b4";
-	}
-	if(elem.id == "giveup_button"){
-		elem.style.backgroundColor = "#b4b4b4";
-	}
-	document.body.style.cursor = "default";
-}
 
 function giveUpButton(event){
 	if(confirm("Do you really want to give up?")){
@@ -326,14 +319,15 @@ function giveUpButton(event){
 
 function verboseButton(event){
 
-	event.target.style.backgroundColor = "#3889EA";
 
 	if(verbose==true){
 		//console.log("TRUE");
+		event.target.style.backgroundColor = "";
 		document.getElementById("verbose").style.display = "none";
 		verbose = false;
 	}
 	else{
+		event.target.style.backgroundColor = "#3889EA";
 		//console.log("FALSE");
 		document.getElementById("verbose").style.display = "block";
 		verbose = true;
@@ -415,8 +409,6 @@ function create_canvas(){
 	button.className = "button";
 	button.id = "verbose_button";
 	button.innerHTML = "Verbose Mode";
-	button.addEventListener("mouseover",hoverButton);
-	button.addEventListener("mouseout",unHoverButton);
 	button.addEventListener("click",verboseButton);
 	container.append(button);
 
@@ -443,8 +435,6 @@ function create_canvas(){
 	button_giveup.className = "button";
 	button_giveup.id = "giveup_button";
 	button_giveup.innerHTML = "Give up";
-	button_giveup.addEventListener("mouseover",hoverButton);
-	button_giveup.addEventListener("mouseout",unHoverButton);
 	button_giveup.addEventListener("click",giveUpButton);
 	container.append(button_giveup);
 
@@ -471,12 +461,13 @@ function create_canvas(){
 
 function write_turn(){
 	if(myTurn){
+		onMyTurnToPlay()
 		var turn = document.getElementById("turn");
 		while (turn.firstChild) {
 		    turn.removeChild(turn.firstChild);
 		}
 		var text = document.createTextNode("your turn");
-		turn.style.color = "#3889EA";
+		turn.className = "my-turn"
 		turn.appendChild(text);
 	}
 	else{
@@ -485,7 +476,7 @@ function write_turn(){
 		    turn.removeChild(turn.firstChild);
 		}
 		var text = document.createTextNode("ai's turn");
-		turn.style.color = "#b4b4b4";
+		turn.className = "enemy-turn"
 		turn.appendChild(text);
 	}
 }
@@ -705,6 +696,7 @@ function OnClickMouse(event){
 		//console.log("Current state: " + columns[0] + " " + columns[1] + " " + columns[2]);
 		check_finished();
 		myTurn=!myTurn;
+
 		write_turn();
 		//print_state();
 		setTimeout(play_AI, 3000);

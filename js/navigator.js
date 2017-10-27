@@ -7,6 +7,7 @@ var loginInfo = {
 	username: null
 }
 var playing = false
+var currentPage = "#"
 function homepageOnLoad() {
 	if(!loginInfo.signedIn) {
 		document.getElementById('configuration').style.display = 'none'
@@ -20,15 +21,16 @@ function homepageOnLoad() {
 }
 
 function onMyTurnToPlay() {
-	if(/*not in game*/false ) {
-
+	if(currentPage !== "#/game") {
+		document.getElementById('your-turn').style.display='block'		
 	}
 }
 
 function bigHeaderHandler(show){
-	if(playing && show/*AND NOT INSIDE THE GAME*/){
+	if(show && playingGame && currentPage !== "#/game"){
 		document.getElementById('returnToGame').style.display='block'
-		document.getElementById('your-turn').style.display='block'
+		if(myTurn)
+			document.getElementById('your-turn').style.display='block'
 	}
 	else {
 		document.getElementById('returnToGame').style.display='none'		
@@ -57,13 +59,15 @@ const pages = {
 		divID: "game-content",
 		div: null,
 		onload: function() {
-			var form = document.getElementById('startGame')
-			var children = form.children
-			var columns = parseInt(children[0].value)
-			var gameType = parseInt(children[0].value) //not used for now
-			var playingFirst = parseInt(children[0].value)
-			var difficulty = parseInt(children[0].value)
-			OnBoardPageLoad(columns, gameType, playingFirst, difficulty)
+			if(!playingGame) {
+				var form = document.getElementById('startGame')
+				var children = form.children
+				var columns = parseInt(children[0].value)
+				var gameType = (children[1].value) //not used for now
+				var playingFirst = (children[2].value)
+				var difficulty = (children[3].value)
+				OnBoardPageLoad(columns, gameType, playingFirst, difficulty, loginInfo.username)
+			}
 			bigHeaderHandler(false)
 		}
 	},
@@ -94,7 +98,6 @@ function onAnchorClick(event){
  * @returns {HTMLElement} 
  */
 function getDivForUrl(url) {
-	console.log(`'${url}'`)
 	var div = pages[url].div;
 	if(div === null)
 		div = pages[url].div = document.getElementById(pages[url].divID);
@@ -103,6 +106,7 @@ function getDivForUrl(url) {
 /**
  * Navigates to the given URL
  * @param {String} url 
+ * @param {Bool} triggerEvent
  */
 function navigate(url) {
 	if(url === "")
@@ -118,10 +122,10 @@ function navigate(url) {
 	if(pages[url].divID !== "homepage")
 		document.getElementById('big-header').style.display = 'block'
 	
+	currentPage = url
 	if(pages[url].onload !== null)
 		pages[url].onload()
 	div.style.display = "block";
-
 }
 
 function resetSelects() {
@@ -135,14 +139,11 @@ function  disabledColor() {
 	for(var i = elements.length - 1; i >= 0; --i){
 		if(elements[i].className !== 'text')
 			continue;
-		console.log('lala')
-		console.log(elements[i])
 		elements[i].addEventListener('keyup', (event) => {
 			if(event.target.value.length == 0)
 				event.target.style.color = '#919191'
 			else
 				event.target.style.color = '#353535'
-			console.log(event.target.value.length)
 		})
 	}
 }
@@ -177,7 +178,6 @@ function playGame(event) {
 
 function login(event) {
 	loginInfo.username = document.getElementById('username_box').value
-	//console.log(document.getElementById('password_box').value)
 	loginInfo.signedIn = true
 	navigate('#')
 }
@@ -216,6 +216,11 @@ var FormEvents = [
 		elemId: 'logoutbutton',
 		eventName: 'click',
 		callback: logout
+	},
+	{
+		elemId: 'returnToGame',
+		eventName: 'click',
+		callback: (event) => { navigate('#/game') }
 	}
 ]
 
