@@ -576,7 +576,8 @@ function appendVerbose(message,color){
 	var text = document.createElement("P");			
 	text.style.color = color;			
 	text.appendChild(t);	
-	chat.appendChild(text);			
+	chat.appendChild(text);	
+	chat.scrollTop = chat.scrollHeight;		
 }
 
 function check_finished(){
