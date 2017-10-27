@@ -546,7 +546,104 @@ option.placeholder {
 
 #points_board  b {
     color: #3889EA; 
+
+#confirmation_container {
+    /*opacity: 0.4;*/
+    width: 100%;
+    height: 100%;
+    top: 50%;
+    left: 50%;
+    /* bring your own prefixes */
+    transform: translate(-50%, -50%);
+    box-shadow: 10px 10px 5px #888888;
+    position: fixed;
+     background: rgb(0, 0, 0); /* Fall-back for browsers that don't
+                                    support rgba */
+    background: rgba(0, 0, 0, .3);
+
+    
+}
+
+#confirmation {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    position: fixed;
+    height: 300px;
+    width: 500px;
+    background-color: #fafafa;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0px 0px 17px 1px rgba(175,175,175,1);
+    
+}
+
+#confirmation > h1 {
+    font-family: novecento_sans_bookbold;
+    color: #e4431f;
+    font-size: 45px;
 }
 
 
+#alert_message{
+    font-size: 15px;
+    margin-top: 0;
+    margin-bottom: 0;
+    height: 30px;
+    margin-left: auto;
+    margin-right: auto;
+    color: red;
+    font-family: novecento_sansmedium, Arial, Helvetica, sans-serif;
+}
 
+
+#button_yes {
+    background-color: #b4b4b4;
+    font-family: novecento_sansmedium, Arial, Helvetica, sans-serif;
+    width: 350px;
+    margin-top: 30px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#button_no {
+    background-color: #b4b4b4;
+    font-family: novecento_sansmedium, Arial, Helvetica, sans-serif;
+    width: 350px;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#main_screen_img {
+    width: 500px;
+    margin-left: 50px;
+}
+
+#difficulty_img {
+    margin-left: 50px;   
+}
+
+#cursor_img {
+    margin-left: 40px;
+}
+
+#verbose_img {
+    width: 500px;
+    margin-left: 45px;
+}
+
+#giveup_img {
+    width: 300px;
+    margin-left: 50px;
+}
+
+#won_score_img {
+    width: 700px;
+    margin-left: 40px;
+}
+
+#giveup_score_img {
+    width: 700px;
+    margin-left: 40px;
+}
