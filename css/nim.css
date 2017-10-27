@@ -546,9 +546,9 @@ option.placeholder {
 
 #points_board  b {
     color: #3889EA; 
+} 
 
 #confirmation_container {
-    /*opacity: 0.4;*/
     width: 100%;
     height: 100%;
     top: 50%;
@@ -557,8 +557,6 @@ option.placeholder {
     transform: translate(-50%, -50%);
     box-shadow: 10px 10px 5px #888888;
     position: fixed;
-     background: rgb(0, 0, 0); /* Fall-back for browsers that don't
-                                    support rgba */
     background: rgba(0, 0, 0, .3);
 
     
@@ -617,33 +615,20 @@ option.placeholder {
 
 #main_screen_img {
     width: 500px;
-    margin-left: 50px;
-}
-
-#difficulty_img {
-    margin-left: 50px;   
-}
-
-#cursor_img {
-    margin-left: 40px;
 }
 
 #verbose_img {
     width: 500px;
-    margin-left: 45px;
 }
 
 #giveup_img {
     width: 300px;
-    margin-left: 50px;
 }
 
 #won_score_img {
     width: 700px;
-    margin-left: 40px;
 }
 
 #giveup_score_img {
     width: 700px;
-    margin-left: 40px;
 }
