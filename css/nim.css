@@ -132,6 +132,7 @@ p.general {
     line-height: 1.6;
     font-size: 1.25em;
     color: rgba(0,0,0,0.8);
+    text-align: justify;
 }
 
 hr.general {
@@ -142,6 +143,11 @@ hr.general {
     box-sizing: content-box;
     height: 0;
     outline: 0;
+}
+
+#about > img {
+    margin:  auto;
+    display: block;
 }
 
 .welcome-message {
