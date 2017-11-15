@@ -6,6 +6,8 @@ var leaderboard = [
 	{name: "El_Rocha", 			np: 20},
 	{name: "Eirne", 			np: 10}
 ]
+var supportStorage = ((typeof window.localStorage) !== 'undefined')
+
 
 /**
  * Creates a leaderboard on the given div(tbody)
@@ -31,10 +33,13 @@ function buildLeaderboard(div)
 		
 }
 
+/**
+ * 
+ * @param {String} username 
+ * @param {Number} points 
+ */
 function OnGameFinished(username, points) {
 	var foundUser = false;
-	console.log(points)
-	console.log(username)
 	for(var i = 0; i < leaderboard.length; i++) {
 		console.log(leaderboard[i])
 		if(leaderboard[i].name === username) {
@@ -49,13 +54,16 @@ function OnGameFinished(username, points) {
 	leaderboard.sort((a,b) => {
 		return b.np-a.np
 	})
-	window.localStorage.setItem('leaderboard', JSON.stringify(leaderboard))
-}
-var temp = window.localStorage.getItem('leaderboard')
-if(temp === null){
-	window.localStorage.setItem('leaderboard', JSON.stringify(leaderboard))
-} else {
-	leaderboard = JSON.parse(temp)
+	if(supportStorage)
+		window.localStorage.setItem('leaderboard', JSON.stringify(leaderboard))
 }
 
-console.log(leaderboard)
+if(supportStorage) {
+	var temp = window.localStorage.getItem('leaderboard')
+	if(temp === null){
+		window.localStorage.setItem('leaderboard', JSON.stringify(leaderboard))
+	} else {
+		leaderboard = JSON.parse(temp)
+	}
+}
+
