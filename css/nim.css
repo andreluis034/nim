@@ -25,7 +25,9 @@
     font: normal normal normal 14px/1 FontAwesome;
     font-size: inherit;
 }
-
+.fa-logout:before {
+    content: "\f011";
+  }
 html {
     min-height: 100%;
     position: relative;
@@ -108,7 +110,9 @@ body {
     font-size: 1.3em;
     line-height: 1;
 }
-
+.leaderboard > thead > tr > th {
+    color: #3889EA;
+}
 .header .user {
     float: right;
     border-left: 1px solid;
@@ -253,7 +257,7 @@ hr.general {
     text-align: center;
     box-sizing: border-box; 
     padding-top:15px; 
-    cursor: pointer;
+    display: block;
 }
 
 #configuration > .user > .profile {
@@ -505,9 +509,7 @@ option.placeholder {
 }
 
 #points_board{
-    overflow: hidden;
     width: 40%;
-    height: 500px;
     margin-left: auto;
     margin-right: auto;
     font-family: Arial, Helvetica, sans-serif;
@@ -515,7 +517,13 @@ option.placeholder {
     border: 1px solid #e8e8e8;
     background-color: #ffffff;
 }
-
+#points_board > .buttons {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+    margin-bottom: 6em;
+}
 #points_board > * {
     color: #b4b4b4;
 }
@@ -549,6 +557,7 @@ option.placeholder {
 } 
 
 #confirmation_container {
+    z-index: 9;
     width: 100%;
     height: 100%;
     top: 50%;
