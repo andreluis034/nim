@@ -1,3 +1,7 @@
+"use strict";
+
+const someRandomNumberWeDontKnow = 700;
+
 function IsEven(n) {
 	return n % 2 == 0
 }
@@ -18,22 +22,64 @@ function NimPlay(column, removeCount) {
 
 /**
  * 
- * @param {Number} columns - The Number of columns in the game
+ * @param {Number} columnCount - The Number of columns in the game
  * @param {String} difficultyName - The difficulty name
  * @param {String} mode - Playing vsAi or vsPlayer
  * @param {Bool} meFirst - If the player in the current session plays first
  */
-function NimGame(columns, difficultyName, mode, meFirst) {
-	this.columns = columns;
+function NimGame(columnCount, difficultyName, mode, meFirst, domElement) {
+	this.columns = columnCount;
 	this.difficultyName = difficultyName;
 	this.difficulty = this.difficulties[difficultyName];
 	this.mode = mode;
-	this.meFirst = meFirst;
-	this.columns = Array(columns).fill(0)
+	this.myTurn = meFirst;
+	this.columns = Array(columnCount).fill(0);
+	this.limits = Array(columnCount).fill(0);
+	this.maxBalls = (columnCount - 1) * 2 + 3;
+	this.myPlays = 0;
+	this.hisPlays = 0;
+	this.initializeColumns();
+	this.ballSize = (someRandomNumberWeDontKnow/this.max_balls); //in pxs
+	this.table_width = (columnCount*(this.ballSize+5));
 	this.events = {
 		gameFinish: [],
 		switchTurn: []
 	}
+	this.domElement = domElement;
+	this.drawGame();
+}
+
+NimGame.prototype.initializeDOM = function() {
+
+	var turn = document.createElement('h1');
+	turn.id = "turn";
+	var alert = document.createElement('h2'); 
+	alert.id = "alert_message";
+	var canvas = document.createElement('div');
+	canvas.id = "canvas";
+	canvas.className = "canvas";
+	var table = document.createElement('table');
+	table.id = "table";
+	canvas.appendChild(table);
+
+	this.domElement.appendChild(turn);
+	this.domElement.appendChild(alert);
+	this.domElement.appendChild(canvas);
+
+}
+
+NimGame.prototype.drawGame = function() {
+	this.writeTurn();
+}
+
+NimGame.prototype.initializeColumns = function() {
+	var incrementer = 3;
+	for (var i = 0; i < this.columns.length; i++) {
+			this.columns[i] = incrementer;
+			this.limits[i]=this.max_balls-incrementer-1;
+			incrementer+=2;
+		}	
+
 }
 
 /**
@@ -100,3 +146,4 @@ NimGame.prototype.difficulties = {
 	heroic: 75,
 	legendary: 100
 }
+

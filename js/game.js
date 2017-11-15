@@ -119,9 +119,7 @@ function initialize_confirmation(message){
 	button_no.addEventListener("click",clear_confirmation);
 	
 	confirmation.appendChild(button_yes);
-	confirmation.appendChild(button_no);
-	
-	
+	confirmation.appendChild(button_no);	
 }
 
 
@@ -306,8 +304,6 @@ function print_state(){
 	}
 	
 	console.log(nimSum);
-	
-	
 }
 
 
