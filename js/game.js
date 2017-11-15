@@ -728,6 +728,7 @@ function play_AI(){
 		appendVerbose("ai played in column " + play_column + ", removed " + temporary + " balls","#b4b4b4");
 	}
 	check_finished();
+	
 	myTurn=!myTurn;
 	write_turn();
 	

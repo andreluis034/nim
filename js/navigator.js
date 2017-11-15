@@ -112,13 +112,16 @@ function navigate(url) {
 	if(url === "")
 		url = "#"
 	url = url || '#'
+	if((url === "#" || url === "#/") && playingGame)
+		return;
+	var div = getDivForUrl(url)
+	
 	for(var elem in pages) {
 		getDivForUrl(elem).style.display = 'none'
 	}
 	for(var i = root_pages.children.length - 1; i >= 0; --i) {
 		root_pages.children[i].style.display ='none'
 	}	
-	var div = getDivForUrl(url)
 	if(pages[url].divID !== "homepage")
 		document.getElementById('big-header').style.display = 'block'
 	
