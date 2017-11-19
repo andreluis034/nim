@@ -452,6 +452,7 @@ option.placeholder {
     border: 1px solid #e8e8e8;
     background-color: #ffffff;
     width: auto;
+    height: 1200px;
     margin-top: 2%;
     margin-left: auto;
     margin-right: auto;
@@ -462,7 +463,7 @@ option.placeholder {
     border-radius: 200px;
     height: 100px;
     width: 100px;
-    background-color: #ffffff; 
+    background-color: #3889EA;
     cursor: pointer;
 }
 
@@ -646,4 +647,19 @@ option.placeholder {
 
 #giveup_score_img {
     width: 700px;
+}
+
+
+
+
+
+/*here lies gud css*/
+
+.stack {    
+    /*display: inline-block;*/
+    vertical-align: bottom;
+    display: inline-flex;
+    flex-direction: column-reverse;
+    background-color: #FFF;
+    margin-top: auto;
 }

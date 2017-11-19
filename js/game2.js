@@ -1,5 +1,6 @@
 "use strict";
 
+var playingGame = false;
 const someRandomNumberWeDontKnow = 700;
 
 function IsEven(n) {
@@ -27,8 +28,10 @@ function NimPlay(column, removeCount) {
  * @param {String} mode - Playing vsAi or vsPlayer
  * @param {Bool} meFirst - If the player in the current session plays first
  */
+
 function NimGame(columnCount, difficultyName, mode, meFirst, domElement) {
-	this.columns = columnCount;
+	playingGame = true;
+	this.columnNumber = columnCount;
 	this.difficultyName = difficultyName;
 	this.difficulty = this.difficulties[difficultyName];
 	this.mode = mode;
@@ -49,27 +52,124 @@ function NimGame(columnCount, difficultyName, mode, meFirst, domElement) {
 	this.drawGame();
 }
 
+function Ball(size){
+	this.element = document.createElement('div');
+	this.element.className = "ball";
+	this.element.style.height=size;
+	this.element.style.width=size;
+}	
+
+Ball.prototype.appendBall = function(whereTo){
+	whereTo.appendChild(this.element);
+}
+
+Ball.prototype.hideBall = function(){
+	this.element.style.visibility = "hidden";
+}
+
+Ball.prototype.paintBall = function(color){
+	this.element.style.backgroundColor = color;
+}
+
+function Stack(width,height){
+
+	this.element = document.createElement('div');
+	this.element.className = "stack";
+	this.element.style.height = height;
+	this.element.style.width = width;
+
+	this.balls = [];
+}
+
+Stack.prototype.hoverStack = function(index){
+	for(var i=this.balls.length-1;i>=index;i--){
+		this.balls[i].paintBall("#7bb3f7");
+	}
+}
+
+Stack.prototype.unHoverStack = function(index){
+	for(var i=this.balls.length-1;i>=index;i--){
+		this.balls[i].paintBall("#3889EA");
+	}
+}
+
+Stack.prototype.pushToStack = function(ball) {
+
+	var length = this.balls.length;
+	var context = this;
+
+	ball.element.innerHTML = length;
+
+	ball.element.addEventListener('mouseover', function() {
+	  context.hoverStack(length);
+	}, false);
+
+	ball.element.addEventListener('mouseout', function() {
+	  context.unHoverStack(length);
+	}, false);
+
+	ball.element.addEventListener('click', function() { 
+	  context.removeBallsByIndex(length);
+	}, false);
+
+	this.balls.push(ball);
+	this.element.appendChild(ball.element);
+}
+
+Stack.prototype.appendStack = function(whereTo) {
+	whereTo.appendChild(this.element);
+}
+
+Stack.prototype.removeBallsByIndex = function(index) {
+	var limit = this.balls.length-index;
+	for(var i = 0; i<limit; i++){
+		var ball = this.balls.pop();
+		ball.hideBall();
+	}
+}
+
+Stack.prototype.removeBalls = function(howMany) {
+	this.removeBallsByIndex(this.balls.length-howMany);
+}
+
 NimGame.prototype.initializeDOM = function() {
 
 	var turn = document.createElement('h1');
 	turn.id = "turn";
 	var alert = document.createElement('h2'); 
 	alert.id = "alert_message";
-	var canvas = document.createElement('div');
-	canvas.id = "canvas";
-	canvas.className = "canvas";
-	var table = document.createElement('table');
-	table.id = "table";
-	canvas.appendChild(table);
+	this.canvas = document.createElement('div');
+	this.canvas.id = "canvas";
+	this.canvas.className = "canvas";
+
+	var width_px = this.table_width+"px";
+	this.canvas.style.width = width_px;
 
 	this.domElement.appendChild(turn);
 	this.domElement.appendChild(alert);
-	this.domElement.appendChild(canvas);
+	this.domElement.appendChild(this.canvas);
 
 }
 
+NimGame.prototype.initializeBoard = function() {
+	var stackWidth = this.table_width/this.columnNumber-5;
+	var stackHeight = 500; //random number for now
+	var counter = 3;
+	for(var i = 0; i<this.columnNumber; i++){
+		var column = new Stack(stackHeight,stackWidth);
+		for(var j = 0; j<counter ; j++){
+			var ball = new Ball(this.ballSize);
+			column.pushToStack(ball);
+		}
+		column.appendStack(this.canvas);
+		this.columns[i]=column; //store dem stacks on the array of this NimGame object
+		counter+=2;
+	}
+}
+
 NimGame.prototype.drawGame = function() {
-	this.writeTurn();
+	this.initializeDOM();
+	this.initializeBoard();
 }
 
 NimGame.prototype.initializeColumns = function() {
@@ -86,9 +186,9 @@ NimGame.prototype.initializeColumns = function() {
  * @returns The nim sum of the current board
  */
 NimGame.prototype.nimSum = function() {
-	var nimSum = this.columns[0];
-	for (var i = 1; i < this.columns.length; i++) {
-		nimSum = nimSum ^ columns[i];
+	var nimSum = this.columns[0].length;
+	for (var i = 1; i < this.columns[i].length; i++) {
+		nimSum = nimSum ^ columns[i].length;
 	}
 	return nimSum;
 }
@@ -105,7 +205,7 @@ NimGame.prototype.on = function(eventName, callback) {
 
 NimGame.prototype.isOver = function() {
 	for(var i = this.columns.length - 1; i >= 0; --i) {
-		if(this.columns[i] !== 0)
+		if(this.columns[i].length !== 0)
 			return false
 	}
 	return true
@@ -119,7 +219,7 @@ NimGame.prototype.shouldPlayRandom = function(){
 NimGame.prototype.getRandomValidColumn = function() {
 	var valid = [];
 	for(var i = this.columns.length - 1; i >= 0; --i) {
-		if(this.columns[i] > 0)
+		if(this.columns[i].length > 0)
 			valid.push(i)
 	}
 	return valid[randomBetween(0, valid.length - 1)]
@@ -132,8 +232,8 @@ NimGame.prototype.getAiPlay = function() {
 		return new NimPlay(column, randomBetween(0, this.columns[column]))
 	}
 	for(var i = 0; i < this.columns.length; ++i) {
-		if(this.columns[i] ^ nimSum < this.columns[i]) {
-			var ballsToRemove = this.columns[i] - (this.columns[i] ^ nimSum);
+		if(this.columns[i].length ^ nimSum < this.columns[i].length) {
+			var ballsToRemove = this.columns[i].length - (this.columns[i].length ^ nimSum);
 			return new NimPlay(i, ballsToRemove);
 		}
 	}

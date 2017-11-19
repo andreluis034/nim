@@ -60,13 +60,16 @@ const pages = {
 		div: null,
 		onload: function() {
 			if(!playingGame) {
+				var domElement = document.getElementById('game')
 				var form = document.getElementById('startGame')
 				var children = form.children
 				var columns = parseInt(children[0].value)
 				var gameType = (children[1].value) //not used for now
 				var playingFirst = (children[2].value)
 				var difficulty = (children[3].value)
-				OnBoardPageLoad(columns, gameType, playingFirst, difficulty, loginInfo.username)
+				console.log("WHAT?");
+				console.log(columns);
+				var game = new NimGame(columns, difficulty, gameType, playingFirst, domElement)
 			}
 			bigHeaderHandler(false)
 		}
