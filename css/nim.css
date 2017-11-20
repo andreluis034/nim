@@ -451,8 +451,8 @@ option.placeholder {
 .canvas{
     border: 1px solid #e8e8e8;
     background-color: #ffffff;
-    width: auto;
-    height: 1200px;
+    /*width: auto;
+    height: 1200px;*/
     margin-top: 2%;
     margin-left: auto;
     margin-right: auto;
@@ -461,8 +461,6 @@ option.placeholder {
 
 .ball{
     border-radius: 200px;
-    height: 100px;
-    width: 100px;
     background-color: #3889EA;
     cursor: pointer;
 }
@@ -603,6 +601,7 @@ option.placeholder {
     color: red;
     font-family: novecento_sansmedium, Arial, Helvetica, sans-serif;
 }
+
 #button_yes:hover {
     background-color: #e4431f;
 }

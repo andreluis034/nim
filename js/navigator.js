@@ -69,7 +69,7 @@ const pages = {
 				var difficulty = (children[3].value)
 				console.log("WHAT?");
 				console.log(columns);
-				var game = new NimGame(columns, difficulty, gameType, playingFirst, domElement)
+				var game = new NimGame(columns, difficulty, gameType, playingFirst, domElement,loginInfo.username)
 			}
 			bigHeaderHandler(false)
 		}
