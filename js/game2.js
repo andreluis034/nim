@@ -18,7 +18,6 @@ function randomBetween(min, max) {
 }
 
 /**
-* 
 * @param {Number} column - The Column on which the balls will be removed
 * @param {Number} removeCount - Number of balls to remove in the specified column
 */
@@ -28,6 +27,9 @@ function NimPlay(column, removeCount) {
 }
 
 
+/**
+ * @param {Number} size - The size of the ball in pixels
+ */
 function Ball(size){
 	this.element = document.createElement('div');
 	this.element.className = "ball";
@@ -36,6 +38,10 @@ function Ball(size){
 	this.element.style.width=size_px;
 }	
 
+
+/**
+ * @param {HTMLElement} whereTo - The element where to append this ball to
+ */
 Ball.prototype.appendBall = function(whereTo){
 	whereTo.appendChild(this.element);
 }
@@ -162,6 +168,7 @@ NimGame.prototype.gameFinished = function(iWon, iGaveUp){
 	document.body.style.cursor = "default";
 	this.domElement.style.display = "none";
 	this.pointsBoard.style.display = "block";
+	var finalText = document.createElement('h1');
 	
 	var multiplier = {
 		Difficulty: {
@@ -182,19 +189,13 @@ NimGame.prototype.gameFinished = function(iWon, iGaveUp){
 		}
 	}
 
-	this.totalPoints = 1;
-	for(var prop in multiplier) {
-		this.totalPoints = this.totalPoints *  multiplier[prop].value;
-	}
-	this.totalPoints = this.totalPoints.toFixed(2);
-	var finalText = document.createElement('h1');
+	var totalPoints = 1;
 
 	if(iGaveUp){
 		this.pointsBoardTitle.innerHTML = "you gave up. the ai won the game.";
-		difficultyMultiplier = "n/a";
+	/*	difficultyMultiplier = "n/a"; // TODO
 		playsMult = "n/a";
-		columnsMult = "n/a";
-		finalText.innerHTML = "Total points = "+"<b>"+this.totalPoints+"</b>";
+		columnsMult = "n/a";*/
 	}
 	else{
 		if(!iWon){
@@ -206,48 +207,27 @@ NimGame.prototype.gameFinished = function(iWon, iGaveUp){
 			this.pointsBoardTitle.style.color = "#3889EA";
 			multiplier.gameFinished.element.innerHTML = "Victorious multiplier = <b>1</b>";
 		}
-		finalText.innerHTML = "Total points = "+"<b>"+this.totalPoints+"</b>";
 	}
 	
-//	OnGameFinished(this.userName, this.totalPoints); //TODO
+//	OnGameFinished(this.userName, totalPoints); //TODO
 	
 	for(var prop in multiplier) {
 		if(prop !== "gameFinished") {
 			multiplier[prop].element.innerHTML = `${prop} multiplier = <b>${multiplier[prop].value}</b>`
 		}
+		totalPoints = totalPoints *  multiplier[prop].value;
 		this.pointsBoard.appendChild(multiplier[prop].element)
 	}
+	totalPoints = totalPoints.toFixed(2);
+	finalText.innerHTML = `Total points = <b>${totalPoints}</b>` // "Total points = "+"<b>"+totalPoints+"</b>";
 	this.pointsBoard.appendChild(finalText);
+
+	//Hide game and show points
 	
-	//create buttons now -- TODO you should have created them in initialize in them
-	
-	//							<input class="button fullwidth" type="submit" value="Play">
-	var buttonContainer = document.createElement('div');
-	buttonContainer.className = "buttons";
-	var playAgainButton = document.createElement('input');
-	playAgainButton.className = "button";
-	playAgainButton.id = "play_again_button";
-	playAgainButton.type = "submit";
-	var context = this;
-	playAgainButton.addEventListener('click', (event) => {
-		var newGame = new NimGame(context.columns.length,context.difficultyName,context.mode,context.meFirst,context.domElement,context.userName);
-	})
-	playAgainButton.value = "Play again";
-	this.pointsBoard.appendChild(playAgainButton);
-	
-	var changeSettignsButton = document.createElement('input');
-	changeSettignsButton.className = "button";
-	changeSettignsButton.id = "change_settings_button"; //to have same settings as above button
-	changeSettignsButton.type = "submit";
-	
-	changeSettignsButton.addEventListener('click', (event) => {
-		navigate('#')
-	})
-	changeSettignsButton.value = "Change settings";
-	
-	buttonContainer.appendChild(playAgainButton);
-	buttonContainer.appendChild(changeSettignsButton);
-	this.pointsBoard.appendChild(buttonContainer);
+
+	for(var i = this.events.gameFinish.length - 1; i >= 0; --i){
+		this.events.gameFinish[i](this, iWon, iGaveUp)
+	}
 	
 }
 
@@ -304,6 +284,7 @@ NimGame.prototype.makePlay = function(play,whoPlays){
 
 NimGame.prototype.initializeDOM = function(){
 	this.turn = document.createElement('h1');
+	this.turn.className = "turn"
 	this.alert = document.createElement('h2'); 
 	this.canvas = document.createElement('div');
 	this.canvas.className = "canvas";
@@ -323,7 +304,7 @@ NimGame.prototype.initializeDOM = function(){
 	
 	//Verbose button
 	this.verboseButton = document.createElement('div');
-	this.verboseButton.className = "button";
+	this.verboseButton.className = "button verbose";
 	this.verboseButton.innerHTML = "Verbose Mode";
 	this.verboseButton.style.width = this.table_width + "px";
 	
@@ -339,7 +320,7 @@ NimGame.prototype.initializeDOM = function(){
 	//Give up button:
 	
 	this.giveUpButton = document.createElement('div');
-	this.giveUpButton.className = "button";
+	this.giveUpButton.className = "button giveup";
 	this.giveUpButton.innerHTML = "Give up";
 	this.giveUpButton.style.width = this.table_width + "px";
 	this.giveUpButton.addEventListener("click", function() {
@@ -383,6 +364,7 @@ NimGame.prototype.initializeDOM = function(){
 	
 	this.pointsBoard = document.createElement('div');
 	
+	
 	this.pointsBoardTitle = document.createElement('h1');
 	this.pointsBoardTitle.className ="title";
 	
@@ -393,16 +375,29 @@ NimGame.prototype.initializeDOM = function(){
 	var pointsBoardPoints = document.createElement('h2');
 	pointsBoardPoints.innerHTML = "Points";
 	
-	// -------------------- //
+	var buttonContainer = document.createElement('div');
+	buttonContainer.className = "buttons";
+	var changeSettignsButton = document.createElement('input');
+	changeSettignsButton.className = "button right";
+	changeSettignsButton.type = "submit";
+	changeSettignsButton.value = "Change settings";
 	
+	var playAgainButton = document.createElement('input');
+	playAgainButton.className = "button left";
+	playAgainButton.type = "submit";
+	playAgainButton.value = "Play again";
+	
+	// -------------------- //
+	buttonContainer.appendChild(changeSettignsButton)
+	buttonContainer.appendChild(playAgainButton)
 	this.domElement.appendChild(this.turn);
 	this.domElement.appendChild(this.alert);
 	this.domElement.appendChild(this.canvas);
-	this.verboseCanvas.appendChild(this.verboseText);
 	this.domElement.appendChild(this.verboseCanvas);
 	this.domElement.appendChild(this.verboseButton);
 	this.domElement.appendChild(this.giveUpButton);
 	this.domElement.appendChild(this.confirmationContainer);
+	this.verboseCanvas.appendChild(this.verboseText);
 	this.confirmationContainer.appendChild(confirmation);
 	confirmation.appendChild(confirmationText);
 	confirmation.appendChild(buttonYes);
@@ -412,6 +407,9 @@ NimGame.prototype.initializeDOM = function(){
 	this.pointsBoard.appendChild(this.pointsBoardTitle);
 	this.pointsBoard.appendChild(hr);
 	this.pointsBoard.appendChild(pointsBoardPoints);
+	this.pointsBoard.appendChild(buttonContainer);
+	this.pointsBoard.appendChild(playAgainButton);
+	this.pointsBoard.style.display = "none"
 	
 }
 

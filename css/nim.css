@@ -183,11 +183,11 @@ hr.general {
     width: 100%;
 }
 
-#verbose_button:hover {
+.button.verbose:hover {
     background-color: #3889EA;
     
 }
-#verbose_button {
+.button.verbose {
     background-color: #b4b4b4;
     line-height: 23px;
     margin-top: 5px;
@@ -195,10 +195,10 @@ hr.general {
     margin-right: auto;
     height: 20px;
 }
-#giveup_button:hover {
+.button.giveup:hover {
     background-color: #e4431f ;
 }
-#giveup_button {
+.button.giveup {
     background-color: #b4b4b4;
     line-height: 45px; 
     margin-top: 5px;
@@ -207,13 +207,15 @@ hr.general {
     height: 50px;
 }
 
-#play_again_button {
+
+.button.left {
     float: left;
-    text-align: center;
 }
-#change_settings_button {
+.button.center {
+    float: left;
+}
+.button.right {
     float: right;
-    text-align: center;
 }
 .button.fullwidth {
     width: 100% !important;
@@ -441,7 +443,7 @@ option.placeholder {
 
 /*---- CANVAS ----*/
 
-#turn {
+.turn {
     text-align: center;
     font-family: novecento_sans_bookbold;
     margin-bottom: 0;
@@ -470,11 +472,6 @@ option.placeholder {
 }
 .enemy-turn {
     color: #b4b4b4;
-}
-
-#table{
-    margin-left: auto;
-    margin-right: auto;
 }
 
 
@@ -507,7 +504,7 @@ option.placeholder {
     overflow-x:hidden;
 }
 
-#points_board{
+.points_board{
     width: 40%;
     margin-left: auto;
     margin-right: auto;
@@ -647,9 +644,6 @@ option.placeholder {
 #giveup_score_img {
     width: 700px;
 }
-
-
-
 
 
 /*here lies gud css*/
