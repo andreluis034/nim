@@ -9,31 +9,117 @@ function IsEven(n) {
 }
 
 /**
- * 
- * @param {Number} min 
- * @param {Number} max 
- */
+* 
+* @param {Number} min 
+* @param {Number} max 
+*/
 function randomBetween(min, max) {
 	return Math.floor(Math.random() * (max - min)) + min
 }
 
+/**
+* 
+* @param {Number} column - The Column on which the balls will be removed
+* @param {Number} removeCount - Number of balls to remove in the specified column
+*/
 function NimPlay(column, removeCount) {
 	this.column = column
 	this.removeCount = removeCount
 }
 
+
+function Ball(size){
+	this.element = document.createElement('div');
+	this.element.className = "ball";
+	var size_px = size + "px"
+	this.element.style.height=size_px;
+	this.element.style.width=size_px;
+}	
+
+Ball.prototype.appendBall = function(whereTo){
+	whereTo.appendChild(this.element);
+}
+
+Ball.prototype.hideBall = function(){
+	this.element.style.visibility = "hidden";
+}
+
+Ball.prototype.paintBall = function(color){
+	this.element.style.backgroundColor = color;
+}
+
+function Stack(width,height,gameContext,index){
+	
+	this.index = index;
+	this.gameContext = gameContext;
+	this.element = document.createElement('div');
+	this.element.className = "stack";
+	this.element.style.height = height;
+	this.element.style.width = width;
+	
+	this.balls = [];
+}
+
+Stack.prototype.hoverStack = function(index){
+	for(var i=this.balls.length-1;i>=index;i--){
+		this.balls[i].paintBall("#7bb3f7");
+	}
+}
+
+Stack.prototype.unHoverStack = function(index){
+	for(var i=this.balls.length-1;i>=index;i--){
+		this.balls[i].paintBall("#3889EA");
+	}
+}
+
+Stack.prototype.pushToStack = function(ball) {
+	
+	var length = this.balls.length;
+	var context = this;
+	
+	ball.element.addEventListener('mouseover', function() {
+		context.hoverStack(length);
+	}, false);
+	
+	ball.element.addEventListener('mouseout', function() {
+		context.unHoverStack(length);
+	}, false);
+	
+	ball.element.addEventListener('click', function() { 
+		context.removeBallsByIndex(length);
+	}, false);
+	
+	this.balls.push(ball);
+	this.element.appendChild(ball.element);
+}
+
+Stack.prototype.appendStack = function(whereTo) {
+	whereTo.appendChild(this.element);
+}
+
+Stack.prototype.removeBallsByIndex = function(index) {
+	this.gameContext.makePlay(new NimPlay(this.index,this.balls.length-index),"me");
+}
+
+Stack.prototype.removeBalls = function(removeCount){
+	for(var i = 0; i<removeCount; i++){
+		var ball = this.balls.pop();
+		ball.hideBall();
+	}
+}
+
 /**
- * 
- * @param {Number} columnCount - The Number of columns in the game
- * @param {String} difficultyName - The difficulty name
- * @param {String} mode - Playing vsAi or vsPlayer
- * @param {Bool} meFirst - If the player in the current session plays first
- */
+* 
+* @param {Number} columnCount - The Number of columns in the game
+* @param {String} difficultyName - The difficulty name
+* @param {String} mode - Playing vsAi or vsPlayer
+* @param {Bool} meFirst - If the player in the current session plays first
+*/
 
 function NimGame(columnCount, difficultyName, mode, meFirst, domElement,userName) {	
-
+	
 	playingGame = true;
-
+	
 	this.meFirst = meFirst;
 	(this.meFirst == "enemyFirst") ? this.myTurn = false : this.myTurn = true;
 	this.userName = userName;
@@ -58,166 +144,82 @@ function NimGame(columnCount, difficultyName, mode, meFirst, domElement,userName
 	this.domElement = domElement;
 	this.drawGame();
 	this.writeTurn();
-
+	
 	if(!this.myTurn){
 		var context = this;
 		setTimeout(function(){context.makePlay(context.getAiPlay(),"him");}, aiThinkTime);
 	}
 }
 
-function Ball(size){
-	this.element = document.createElement('div');
-	this.element.className = "ball";
-	var size_px = size + "px"
-	this.element.style.height=size_px;
-	this.element.style.width=size_px;
-}	
 
-Ball.prototype.appendBall = function(whereTo){
-	whereTo.appendChild(this.element);
-}
 
-Ball.prototype.hideBall = function(){
-	this.element.style.visibility = "hidden";
-}
-
-Ball.prototype.paintBall = function(color){
-	this.element.style.backgroundColor = color;
-}
-
-function Stack(width,height,gameContext,index){
-
-	this.index = index;
-	this.gameContext = gameContext;
-	this.element = document.createElement('div');
-	this.element.className = "stack";
-	this.element.style.height = height;
-	this.element.style.width = width;
-
-	this.balls = [];
-}
-
-Stack.prototype.hoverStack = function(index){
-	for(var i=this.balls.length-1;i>=index;i--){
-		this.balls[i].paintBall("#7bb3f7");
-	}
-}
-
-Stack.prototype.unHoverStack = function(index){
-	for(var i=this.balls.length-1;i>=index;i--){
-		this.balls[i].paintBall("#3889EA");
-	}
-}
-
-Stack.prototype.pushToStack = function(ball) {
-
-	var length = this.balls.length;
-	var context = this;
-
-	//ball.element.innerHTML = length;
-
-	ball.element.addEventListener('mouseover', function() {
-	  context.hoverStack(length);
-	}, false);
-
-	ball.element.addEventListener('mouseout', function() {
-	  context.unHoverStack(length);
-	}, false);
-
-	ball.element.addEventListener('click', function() { 
-	  context.removeBallsByIndex(length);
-	}, false);
-
-	this.balls.push(ball);
-	this.element.appendChild(ball.element);
-}
-
-Stack.prototype.appendStack = function(whereTo) {
-	whereTo.appendChild(this.element);
-}
-
-Stack.prototype.removeBallsByIndex = function(index) {
-	this.gameContext.makePlay(new NimPlay(this.index,this.balls.length-index),"me");
-}
-
-Stack.prototype.removeBalls = function(removeCount){
-	for(var i = 0; i<removeCount; i++){
-		var ball = this.balls.pop();
-		ball.hideBall();
-	}
-}
-
-NimGame.prototype.gameFinished = function(iWon,iGaveUp){
-
+NimGame.prototype.gameFinished = function(iWon, iGaveUp){
+	
 	console.log("iWon: "+iWon);
 	console.log("iGaveUp: "+iGaveUp);
-
+	
 	playingGame = false;
 	document.body.style.cursor = "default";
 	this.domElement.style.display = "none";
 	this.pointsBoard.style.display = "block";
-
-	var difficultyMultiplier = (this.difficulties[this.difficultyName]/10);
-
-	var playsMult = 1 + this.columns.length/(this.howManyPlays);
-
-	var columnsMult = 1 + this.columns.length/10;
-
-	this.totalPoints;
-
-	var h3_1 = document.createElement('h3');
-	var h3_2 = document.createElement('h3');
-	var h3_3 = document.createElement('h3');
-	var h3_4 = document.createElement('h3');
-	var h1 = document.createElement('h1');
 	
+	var multiplier = {
+		Difficulty: {
+			value: iGaveUp ? 0 : (this.difficulties[this.difficultyName]/10),
+			element: document.createElement('h3')
+		},
+		Plays: {
+			value:  iGaveUp ? 0 : (1 + this.columns.length/(this.howManyPlays)),
+			element: document.createElement('h3')
+		},
+		Columns: {
+			value:  iGaveUp ? 0 : (1 + this.columns.length/10),
+			element: document.createElement('h3')
+		},
+		gameFinished: {
+			value: iGaveUp ? 0 : (iWon ? 1 : 0.1),
+			element: document.createElement('h3')
+		}
+	}
+
+	this.totalPoints = 1;
+	for(var prop in multiplier) {
+		this.totalPoints = this.totalPoints *  multiplier[prop].value;
+	}
+	this.totalPoints = this.totalPoints.toFixed(2);
+	var finalText = document.createElement('h1');
 
 	if(iGaveUp){
 		this.pointsBoardTitle.innerHTML = "you gave up. the ai won the game.";
-		this.totalPoints = 0;
 		difficultyMultiplier = "n/a";
 		playsMult = "n/a";
 		columnsMult = "n/a";
-		h1.innerHTML = "Total points = "+"<b>"+this.totalPoints+"</b>";
+		finalText.innerHTML = "Total points = "+"<b>"+this.totalPoints+"</b>";
 	}
-
 	else{
-
 		if(!iWon){
 			this.pointsBoardTitle.innerHTML = "the ai won the game.";
-			this.totalPoints = difficultyMultiplier * columnsMult * playsMult;
-			this.totalPoints = this.totalPoints*0.1;
-			this.totalPoints = this.totalPoints.toFixed(2);
-			h3_4.innerHTML = "Defeated multiplier = <b>0.1</b>";
-			h1.innerHTML = "Total points = "+"<b>"+this.totalPoints+"</b>";
+			multiplier.gameFinished.element.innerHTML = "Defeated multiplier = <b>0.1</b>";
 		}
-
 		else{
 			this.pointsBoardTitle.innerHTML = "congratulations, you won the game!";
 			this.pointsBoardTitle.style.color = "#3889EA";
-			h3_4.innerHTML = "Victorious multiplier = <b>1</b>";
-			this.totalPoints = difficultyMultiplier * columnsMult * playsMult;
-			this.totalPoints = this.totalPoints.toFixed(2);
-			h1.innerHTML = "Total points = "+"<b>"+this.totalPoints+"</b>";
+			multiplier.gameFinished.element.innerHTML = "Victorious multiplier = <b>1</b>";
 		}
-
+		finalText.innerHTML = "Total points = "+"<b>"+this.totalPoints+"</b>";
 	}
-
-	OnGameFinished(this.userName, this.totalPoints);
-
-	h3_1.innerHTML = "Difficulty multiplier = <b>"+difficultyMultiplier+"</b>";
 	
-	h3_2.innerHTML = "Plays multiplier = <b>"+playsMult+"</b>";
+//	OnGameFinished(this.userName, this.totalPoints); //TODO
 	
-	h3_3.innerHTML = "Columns multiplier = <b>"+columnsMult+"</b>";
-
-	this.pointsBoard.appendChild(h3_1);
-	this.pointsBoard.appendChild(h3_2);
-	this.pointsBoard.appendChild(h3_3);
-	this.pointsBoard.appendChild(h3_4);
-	this.pointsBoard.appendChild(h1);
-
-	//create buttons now
+	for(var prop in multiplier) {
+		if(prop !== "gameFinished") {
+			multiplier[prop].element.innerHTML = `${prop} multiplier = <b>${multiplier[prop].value}</b>`
+		}
+		this.pointsBoard.appendChild(multiplier[prop].element)
+	}
+	this.pointsBoard.appendChild(finalText);
+	
+	//create buttons now -- TODO you should have created them in initialize in them
 	
 	//							<input class="button fullwidth" type="submit" value="Play">
 	var buttonContainer = document.createElement('div');
@@ -242,11 +244,11 @@ NimGame.prototype.gameFinished = function(iWon,iGaveUp){
 		navigate('#')
 	})
 	changeSettignsButton.value = "Change settings";
-
+	
 	buttonContainer.appendChild(playAgainButton);
 	buttonContainer.appendChild(changeSettignsButton);
 	this.pointsBoard.appendChild(buttonContainer);
-
+	
 }
 
 NimGame.prototype.showAlert = function(message){
@@ -254,14 +256,7 @@ NimGame.prototype.showAlert = function(message){
 }
 
 NimGame.prototype.writeTurn = function(){
-	switch(this.myTurn){
-		case true:
-		this.turn.innerHTML = "your turn";
-		break;
-		case false:
-		this.turn.innerHTML = "opponent's turn";
-		break;
-	}
+	this.turn.innerHTML = this.myTurn ? "your turn" : "opponent's turn";
 }
 
 NimGame.prototype.showGiveUp = function(){
@@ -273,12 +268,9 @@ NimGame.prototype.hideGiveUp = function(){
 }
 
 NimGame.prototype.appendVerbose = function(message,color){
-	//var chat = document.getElementById("verbose_chat");
-	//var textNode = document.createTextNode(message);
 	var text = document.createElement('p');	
 	text.innerHTML = message;		
 	text.style.color = color;			
-	//textNode.appendChild(text);	
 	this.verboseText.appendChild(text);	
 	this.verboseText.scrollTop = this.verboseText.scrollHeight;	
 }
@@ -289,7 +281,7 @@ NimGame.prototype.makePlay = function(play,whoPlays){
 		this.myTurn = !this.myTurn;
 		this.showAlert("");
 		this.writeTurn();
-
+		
 		if(this.isOver()){
 			this.gameFinished(!this.myTurn,false);
 			return;
@@ -312,109 +304,97 @@ NimGame.prototype.makePlay = function(play,whoPlays){
 
 NimGame.prototype.initializeDOM = function(){
 	this.turn = document.createElement('h1');
-	this.turn.id = "turn";
 	this.alert = document.createElement('h2'); 
-	this.alert.id = "alert_message";
 	this.canvas = document.createElement('div');
-	this.canvas.id = "canvas";
 	this.canvas.className = "canvas";
-
+	
 	var width_px = this.table_width+"px";
 	this.canvas.style.width = width_px;
 	this.canvas.style.height = this.ballSize*this.maxBalls;
-
+	
 	//Verbose container:
 	
 	this.verboseCanvas = document.createElement('div');
 	this.verboseText = document.createElement('div');
 	this.verboseCanvas.className = "canvas";
-	this.verboseCanvas.id = "verbose";
 	this.verboseCanvas.style.width = this.table_width + "px";
 	this.verboseText.className = "verbose_text";
-	this.verboseText.id = "verbose_chat";	
 	this.verboseCanvas.style.display = "none";
-
-		//Verbose button
-		this.verboseButton = document.createElement('div');
-		this.verboseButton.className = "button";
-		this.verboseButton.id = "verbose_button";
-		this.verboseButton.innerHTML = "Verbose Mode";
-		this.verboseButton.style.width = this.table_width + "px";
-
-		var context = this;
-
-		this.verboseButton.addEventListener('click', function() {
-			(context.verboseMode) ? context.verboseCanvas.style.display = "none" : context.verboseCanvas.style.display = "block";
-			context.verboseMode = !context.verboseMode;
-		}, false);
+	
+	//Verbose button
+	this.verboseButton = document.createElement('div');
+	this.verboseButton.className = "button";
+	this.verboseButton.innerHTML = "Verbose Mode";
+	this.verboseButton.style.width = this.table_width + "px";
+	
+	var context = this;
+	
+	this.verboseButton.addEventListener('click', function() {
+		(context.verboseMode) ? context.verboseCanvas.style.display = "none" : context.verboseCanvas.style.display = "block";
+		context.verboseMode = !context.verboseMode;
+	}, false);
 	
 	// -------------------- //
-
+	
 	//Give up button:
-
+	
 	this.giveUpButton = document.createElement('div');
 	this.giveUpButton.className = "button";
-	this.giveUpButton.id = "giveup_button";
 	this.giveUpButton.innerHTML = "Give up";
 	this.giveUpButton.style.width = this.table_width + "px";
 	this.giveUpButton.addEventListener("click", function() {
-			context.showGiveUp();
-		}, false);
+		context.showGiveUp();
+	}, false);
 	
 	// -------------------- //
-
+	
 	//Give up container:
-
+	
 	this.confirmationContainer = document.createElement('div');
-	this.confirmationContainer.id = "confirmation_container";
 	this.confirmationContainer.style.visibility = "hidden";
-
+	
 	var confirmation = document.createElement('div');
-	confirmation.id = "confirmation";
-
+	
 	var confirmationText = document.createElement('h1');
 	confirmationText.innerHTML = "Give up?";
-
-		//Give up YES or NO buttons:
-
-		var buttonYes = document.createElement('div');
-		buttonYes.id = "button_yes";
-		buttonYes.className = "button";
-		buttonYes.innerHTML = "yes"
-
-		buttonYes.addEventListener("click", function() {
-			context.gameFinished(false,true);
-		}, false);
-
-		var buttonNo = document.createElement('div');
-		buttonNo.id = "button_no";	
-		buttonNo.className = "button";
-		buttonNo.innerHTML = "no";
-
-		buttonNo.addEventListener("click", function() {
-			context.hideGiveUp();
-		}, false);
-
-
+	
+	//Give up YES or NO buttons:
+	
+	var buttonYes = document.createElement('div');
+	buttonYes.className = "button";
+	buttonYes.innerHTML = "yes"
+	
+	buttonYes.addEventListener("click", function() {
+		context.gameFinished(false,true);
+	}, false);
+	
+	var buttonNo = document.createElement('div');
+	buttonNo.className = "button";
+	buttonNo.innerHTML = "no";
+	
+	buttonNo.addEventListener("click", function() {
+		context.hideGiveUp();
+	}, false);
+	
+	
 	// ---------------------- //
-
+	
 	//Points board for when the game is finished:
-
+	
 	this.pointsBoard = document.createElement('div');
-	this.pointsBoard.id = "points_board";
-
+	
 	this.pointsBoardTitle = document.createElement('h1');
 	this.pointsBoardTitle.className ="title";
 	
-
+	
 	var hr = document.createElement('hr');
 	this.pointsBoard.appendChild(hr);
-
+	
 	var pointsBoardPoints = document.createElement('h2');
 	pointsBoardPoints.innerHTML = "Points";
-
+	
 	// -------------------- //
-
+	
 	this.domElement.appendChild(this.turn);
 	this.domElement.appendChild(this.alert);
 	this.domElement.appendChild(this.canvas);
@@ -427,14 +407,12 @@ NimGame.prototype.initializeDOM = function(){
 	confirmation.appendChild(confirmationText);
 	confirmation.appendChild(buttonYes);
 	confirmation.appendChild(buttonNo);
-
-	var gameContent = document.getElementById("game-content");
-
-	gameContent.appendChild(this.pointsBoard);
+		
+	this.domElement.appendChild(this.pointsBoard);
 	this.pointsBoard.appendChild(this.pointsBoardTitle);
 	this.pointsBoard.appendChild(hr);
 	this.pointsBoard.appendChild(pointsBoardPoints);
-
+	
 }
 
 NimGame.prototype.initializeBoard = function() {
@@ -461,18 +439,16 @@ NimGame.prototype.drawGame = function() {
 NimGame.prototype.initializeColumns = function() {
 	var incrementer = 3;
 	for (var i = 0; i < this.columns.length; i++) {
-			this.columns[i] = incrementer;
-			this.limits[i]=this.max_balls-incrementer-1;
-			incrementer+=2;
-		}	
-
+		this.columns[i] = incrementer;
+		this.limits[i]=this.max_balls-incrementer-1;
+		incrementer+=2;
+	}	
 }
 
 /**
- * @returns The nim sum of the current board
- */
+* @returns {Number} The nim sum of the current board
+*/
 NimGame.prototype.nimSum = function() {
-	console.log("\n\n --CALCULATING NIM SUM --\n\n");
 	var nimSum = this.columns[0].balls.length;
 	console.log("nimSum = "+nimSum);
 	for (var i = 1; i < this.columns.length; i++) {
@@ -485,19 +461,19 @@ NimGame.prototype.nimSum = function() {
 }
 
 /**
- * @param {String} eventName
- * @param {Function} callback
- */
+* @param {String} eventName
+* @param {Function} callback
+*/
 NimGame.prototype.on = function(eventName, callback) {
 	if(this.events[eventName] === null)
-		this.events[eventName] = []
+	this.events[eventName] = []
 	this.events[eventName].push(callback)
 }
 
 NimGame.prototype.isOver = function() {
 	for(var i = this.columns.length - 1; i >= 0; --i) {
 		if(this.columns[i].balls.length !== 0)
-			return false
+		return false
 	}
 	return true
 }
@@ -507,6 +483,9 @@ NimGame.prototype.shouldPlayRandom = function(){
 	return random>=this.difficulty
 }
 
+/**
+* @returns {Number} - Returns a random column which contains atleast one ball
+*/
 NimGame.prototype.getRandomValidColumn = function() {
 	var valid = [];
 	for(var i = this.columns.length - 1; i >= 0; --i) {
@@ -538,7 +517,7 @@ NimGame.prototype.getAiPlay = function() {
 			return new NimPlay(i, ballsToRemove);
 		}
 	}
-
+	
 }
 
 NimGame.prototype.difficulties = {
