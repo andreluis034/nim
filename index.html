@@ -20,8 +20,8 @@
 				<h1>nim</h1>
 				<h2>A mathematical game of strategy</h2>
 			</div>
-			
 			<div class="container log-in">
+				<h2 id="error"></h2>	
 				<div id='configuration'>
 					<div class='user'>
 						<span class="profile">
@@ -36,7 +36,7 @@
 						<select class="text" id="adversary">
 							<option class="placeholder" value="" selected disabled>Adversary</option>
 							<option value="Computer">Computer</option>
-							<option value="Human" disabled>Human - To be implemented</option>
+							<option value="Human">Human</option>
 						</select>
 						<select class="text" id="playOrder">
 							<option class="placeholder" value="" selected disabled>Play order</option>
@@ -50,6 +50,7 @@
 							<option value="heroic">Heroic</option>
 							<option value="legendary">Legendary</option>
 						</select>
+						<input class="text" id="groupnumber" type="number" min="0" name="group" placeholder="Group Number">
 						<div class="form-buttons">
 							<input class="button fullwidth" type="submit" value="Play">
 						</div>
@@ -67,7 +68,7 @@
 						
 						<div class="form-buttons">
 							<input class="button login" type="submit" value="Login" id="loginButton"> 
-							<input class="button register disabled" type="submit" value="Register" id="registerButton">
+							<input class="button register" type="submit" value="Register" id="registerButton">
 						</div>
 					</form>
 				</div>
