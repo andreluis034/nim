@@ -481,7 +481,7 @@ option.placeholder {
     margin-top: 0;
 }
 
-#verbose{
+.verbose{
     /*display: none;*/
     margin-left: auto;
     margin-right: auto;
@@ -490,7 +490,7 @@ option.placeholder {
     height: 100px;
 }
 
-#verbose_chat  p {
+.verbose p {
     font-size: 15px;
     font-family: novecento_sansmedium, Arial, Helvetica, sans-serif;
 }
