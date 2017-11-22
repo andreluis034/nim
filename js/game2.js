@@ -150,7 +150,7 @@ function NimGame(mode,columnCount, difficultyName, meFirst, domElement,userName,
 	//this.hisPlays = 0;
 	this.initializeColumns();
 	this.ballSize = (someRandomNumberWeDontKnow/this.maxBalls); //in pxs
-	this.table_width = (columnCount*(this.ballSize));
+	this.table_width = (columnCount*(this.ballSize)) + 5;
 	this.events = {
 		gameFinish: [],
 		switchTurn: []
