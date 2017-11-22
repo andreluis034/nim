@@ -2,6 +2,8 @@
 //url -> div
 var root_pages;
 const selectsToReset = ['adversary', 'playOrder', 'gamedifficulty'];
+const host = "twserver.alunos.dcc.fc.up.pt"
+const port = 8008;
 var loginInfo = {
 	signedIn: false,
 	username: null
@@ -9,6 +11,9 @@ var loginInfo = {
 var playing = false
 var currentPage = "#"
 function homepageOnLoad() {
+
+	cleanError();
+
 	if(!loginInfo.signedIn) {
 		document.getElementById('configuration').style.display = 'none'
 		document.getElementById('login-form').style.display = 'block'
@@ -192,10 +197,57 @@ function playGame(event) {
 	navigate('#/game')
 }
 
+function cleanError(){
+	var errorText = document.getElementById("error");
+	errorText.innerHTML = "";
+}
+
+function throwJoinError(id){
+
+	var errorText = document.getElementById("error");
+
+	switch(id){
+		case "loginButton":
+		errorText.innerHTML = "Wrong user/password combination"
+		break;
+		case "registerButton":
+		errorText.innerHTML = "Username already exists"
+		break;
+	}
+}
+
+function makeRequest(host, port, command, method, data, callback) {
+	var xhr = new XMLHttpRequest();
+	xhr.onreadystatechange = function() {
+		console.log(xhr.readyState )
+		console.log(xhr.status )
+		if(xhr.readyState != 4)
+			return
+		callback(xhr.status, JSON.parse(xhr.responseText))
+	}
+	xhr.open(method, `http://${host}:${port}/${command}`);
+	//xhr.setRequestHeader("Content-Type", "application/json");
+	xhr.send(JSON.stringify(data))
+}
+
+
 function login(event) {
 	loginInfo.username = document.getElementById('username_box').value
-	loginInfo.signedIn = true
-	navigate('#')
+	loginInfo.password = document.getElementById('password_box').value
+
+	makeRequest(host, port, "register", "POST", {nick: loginInfo.username, pass: loginInfo.password}, (status, data) => {
+		if(data.error){
+			throwJoinError(event.target.id);
+		}
+
+		else{
+			loginInfo.signedIn = true
+			navigate('#')
+			console.log(data)
+			console.log(status)
+		}
+	})
+
 }
 
 function logout(event) {
@@ -204,7 +256,7 @@ function logout(event) {
 }
 
 function register(event) {
-	//TODO
+	login(event);
 }
 
 var FormEvents = [
@@ -221,7 +273,7 @@ var FormEvents = [
 	{
 		elemId: 'loginButton',
 		eventName: 'click',
-		callback:login
+		callback: login
 	},
 	{
 		elemId: 'registerButton',

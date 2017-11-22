@@ -236,6 +236,13 @@ hr.general {
     padding: 2%;
 }
 
+.container.log-in > h2 {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 1em;
+    color: red !important;
+}
+
 .container.log-in > .user {
     margin: 0 auto;
     background: #FFF;
