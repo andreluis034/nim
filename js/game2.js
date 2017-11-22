@@ -3,6 +3,8 @@
 var playingGame = false;
 const someRandomNumberWeDontKnow = 700;
 const aiThinkTime = 2000; //think time of the ai in ms
+//const host = "twserver.alunos.dcc.fc.up.pt";
+//const port = 8008;
 
 function IsEven(n) {
 	return n % 2 == 0
@@ -104,7 +106,16 @@ Stack.prototype.appendStack = function(whereTo) {
 }
 
 Stack.prototype.removeBallsByIndex = function(index) {
-	this.gameContext.makePlay(new NimPlay(this.index,this.balls.length-index),"me");
+	switch(this.gameContext.mode){
+		case "Human":
+		console.log("notifying...");
+		this.gameContext.notifyPlay(new NimPlay(this.index,this.balls.length-index));
+		break;
+		case "Computer":
+		this.gameContext.makePlay(new NimPlay(this.index,this.balls.length-index),"me");
+		break;
+	}
+	
 }
 
 Stack.prototype.removeBalls = function(removeCount){
@@ -122,24 +133,21 @@ Stack.prototype.removeBalls = function(removeCount){
 * @param {Bool} meFirst - If the player in the current session plays first
 */
 
-function NimGame(columnCount, difficultyName, mode, meFirst, domElement,userName) {	
+function NimGame(mode,columnCount, difficultyName, meFirst, domElement,userName,groupNumber,password) {	
+
+	//new NimGame(mode,columns,undefined,undefined,domElement,loginInfo.username,group,loginInfo.password)
 	
 	playingGame = true;
-	
-	this.meFirst = meFirst;
-	(this.meFirst == "enemyFirst") ? this.myTurn = false : this.myTurn = true;
-	this.userName = userName;
-	this.howManyPlays = 0;
-	this.verboseMode = false;
-	this.columnNumber = columnCount;
-	this.difficultyName = difficultyName;
-	this.difficulty = this.difficulties[difficultyName];
+
 	this.mode = mode;
+	this.userName = userName;
+	this.columnNumber = columnCount;
+	this.verboseMode = false;
 	this.columns = Array(columnCount).fill(0);
 	this.limits = Array(columnCount).fill(0);
 	this.maxBalls = (columnCount - 1) * 2 + 3;
-	this.myPlays = 0;
-	this.hisPlays = 0;
+	//this.myPlays = 0;
+	//this.hisPlays = 0;
 	this.initializeColumns();
 	this.ballSize = (someRandomNumberWeDontKnow/this.maxBalls); //in pxs
 	this.table_width = (columnCount*(this.ballSize));
@@ -149,12 +157,119 @@ function NimGame(columnCount, difficultyName, mode, meFirst, domElement,userName
 	}
 	this.domElement = domElement;
 	this.drawGame();
-	this.writeTurn();
-	
-	if(!this.myTurn){
-		var context = this;
-		setTimeout(function(){context.makePlay(context.getAiPlay(),"him");}, aiThinkTime);
+
+	switch(this.mode){
+		case "Human":
+			this.groupNumber = groupNumber;
+			this.password = password;
+			this.joinGame();
+		break;
+		case "Computer":
+			this.meFirst = meFirst;
+			(this.meFirst == "enemyFirst") ? this.myTurn = false : this.myTurn = true;
+			this.howManyPlays = 0;
+			this.difficultyName = difficultyName;
+			this.difficulty = this.difficulties[difficultyName];
+			this.writeTurn();
+			if(!this.myTurn){
+				var context = this;
+				setTimeout(function(){context.makePlay(context.getAiPlay(),"him");}, aiThinkTime);
+			}
+		break;
 	}
+
+	
+}
+
+NimGame.prototype.notifyPlay = function(play){
+
+	console.log(play);
+
+	
+	console.log("LENGTH: "+ this.columns[play.column].balls.length);
+	console.log("REMOVE COUNT: "+play.removeCount);
+
+	var tmpPieces = this.columns[play.column].balls.length-play.removeCount;
+
+	console.log("MAKING REQUEST OF POST OF NOTIFY:");
+	console.log(loginInfo.username);
+	console.log(loginInfo.password);
+	console.log(this.gameId);
+	console.log(play.column);
+	console.log(tmpPieces);
+	console.log("---");
+
+	makeRequest(host, port, "notify", "POST", {nick: loginInfo.username, pass: loginInfo.password,game: this.gameId, stack: play.column, pieces: tmpPieces}, (status, data) => {
+		if(data.error){
+			this.showAlert(data.error);
+		}
+
+		else{
+			console.log("Valid play. Let's wait for the update!");
+		}
+	})
+
+}
+
+NimGame.prototype.onReceiveUpdate = function(data){
+	console.log("\n\n\nRECEIVED UPDATE");
+	console.log(data);
+	console.log("\n\n\n");
+	if(data.error){
+		console.log(data);
+	}
+	else{
+		if(data.turn!=undefined && data.rack!=undefined && data.stack==undefined && data.pieces==undefined){
+			switch(data.turn){
+				case this.userName:
+				console.log("Your turn to play!");
+				break;
+				default:
+				console.log("Enemy's turn to play!");
+				break;
+			}
+			console.log(data.rack);
+		}
+
+		else{
+			if(data.stack!=undefined && data.pieces!=undefined){
+				//new play update being received
+				var ballsRemoved = this.columns[data.stack].balls.length-data.pieces;
+				var play = new NimPlay(data.stack,ballsRemoved);
+				console.log("BALLSZ:");
+				console.log(this.columns[data.stack]);
+				console.log(ballsRemoved);
+				this.columns[data.stack].removeBalls(ballsRemoved); //here we update the play on our screen!
+			}
+		}
+	}
+}
+
+NimGame.prototype.joinGame = function(){
+	//console.log("SIZE IS GOING TO BE "+this.columnNumber);
+	makeRequest(host, port, "join", "POST", {group: this.groupNumber, nick: this.userName, pass: this.password, size: this.columnNumber},(status, data) => {
+		if(data.error){
+			console.log(data.error);
+		}
+		else{
+			console.log(data);
+			this.gameId = data.game;
+			this.initializeServerEventListener(data.game);	
+			console.log("Waiting for other player...");
+		}
+	})
+}
+
+NimGame.prototype.initializeServerEventListener = function(gameId){
+	//we wait for updates to do stuff
+	//console.log("Fetching from ... "+ `http://${host}:${port}/update?nick=${this.userName}&game=${gameId}`);
+	this.eventSource = new EventSource(`http://${host}:${port}/update?nick=${this.userName}&game=${gameId}`);
+	var context = this;
+	this.eventSource.onmessage = function(event) {
+		console.log("RECEIVED AN UPDATE!")
+   		var data = JSON.parse(decodeURIComponent(event.data));
+   		context.onReceiveUpdate(data);
+ 	}
 }
 
 NimGame.prototype.showOfflinePoints = function(iWon, iGaveUp) {
@@ -419,7 +534,7 @@ NimGame.prototype.initializeDOM = function(){
 NimGame.prototype.initializeBoard = function() {
 	var stackWidth = this.table_width/this.columnNumber-5;
 	var stackHeight = this.ballSize*this.maxBalls;
-	var counter = 3;
+	var counter = 1;
 	for(var i = 0; i<this.columnNumber; i++){
 		var column = new Stack(stackHeight,stackWidth,this,i);
 		for(var j = 0; j<counter ; j++){
@@ -428,7 +543,7 @@ NimGame.prototype.initializeBoard = function() {
 		}
 		column.appendStack(this.canvas);
 		this.columns[i]=column; //store dem stacks on the array of this NimGame object
-		counter+=2;
+		counter+=1;
 	}
 }
 
@@ -438,11 +553,11 @@ NimGame.prototype.drawGame = function() {
 }
 
 NimGame.prototype.initializeColumns = function() {
-	var incrementer = 3;
+	var incrementer = 1;
 	for (var i = 0; i < this.columns.length; i++) {
 		this.columns[i] = incrementer;
 		this.limits[i]=this.max_balls-incrementer-1;
-		incrementer+=2;
+		incrementer+=1;
 	}	
 }
 

@@ -65,16 +65,27 @@ const pages = {
 		div: null,
 		onload: function() {
 			if(!playingGame) {
+
 				var domElement = document.getElementById('game')
 				var form = document.getElementById('startGame')
 				var children = form.children
 				var columns = parseInt(children[0].value)
-				var gameType = (children[1].value) //not used for now
+				var gameType = (children[1].value)
 				var playingFirst = (children[2].value)
-				var difficulty = (children[3].value)
-				console.log("WHAT?");
-				console.log(columns);
-				var game = new NimGame(columns, difficulty, gameType, playingFirst, domElement,loginInfo.username)
+				var difficulty = (children[3].value);
+				var group = parseInt(children[4].value)
+
+				var game = new NimGame(gameType,columns,difficulty,playingFirst,domElement,loginInfo.username,group,loginInfo.password);
+
+				//console.log("WHAT?");
+				//console.log(columns);
+				//console.log("----------------------------------");
+				//console.log(children[0].value);
+				//console.log(children[1].value);
+				//console.log(children[2].value);
+				//console.log(children[3].value);
+				//console.log(children[4].value);
+				//console.log("----------------------------------");
 			}
 			bigHeaderHandler(false)
 		}
@@ -176,6 +187,7 @@ function selectChange() {
 }
 
 function playGame(event) {
+	console.log("lets test")
 	event.preventDefault()
 	var elements = document.getElementById('startGame').children
 	var allGood = true
@@ -185,8 +197,8 @@ function playGame(event) {
 		console.log(elements[i].tagName)
 		console.log(elements[i].selectedIndex)
 		console.log(elements[i].value)
-		if((elements[i].tagName === "SELECT" && elements[i].selectedIndex === 0) 
-			|| (elements[i].tagName === "INPUT" && elements[i].value === "")){
+		if( ( (elements[i].tagName === "SELECT" && elements[i].selectedIndex === 0) 
+			|| (elements[i].tagName === "INPUT" && elements[i].value === "") ) && elements[i].style.display == "inline"){
 				elements[i].style.borderColor = '#B00'
 				allGood = false			
 		}
@@ -217,6 +229,9 @@ function throwJoinError(id){
 }
 
 function makeRequest(host, port, command, method, data, callback) {
+
+	//console.log(host_ + "    " + port_);
+
 	var xhr = new XMLHttpRequest();
 	xhr.onreadystatechange = function() {
 		console.log(xhr.readyState )
@@ -259,6 +274,29 @@ function register(event) {
 	login(event);
 }
 
+function changeDisplay(objects,display){
+	for(var i = 0;i<objects.length;i++){
+		document.getElementById(objects[i]).style.display = display;
+	}
+}
+
+function changeGameMode(event){
+	switch(event.target.value){
+		case "Computer":
+			changeDisplay(ComputerForms,'inline');
+			changeDisplay(HumanForms,'none');
+		break;
+		case "Human":
+			changeDisplay(ComputerForms,'none');
+			changeDisplay(HumanForms,'inline');
+		break;
+	}
+}
+
+var ComputerForms = ['playOrder','gamedifficulty'];
+
+var HumanForms = ['groupnumber'];
+
 var FormEvents = [
 	{
 		elemId: 'startGame',
@@ -284,6 +322,10 @@ var FormEvents = [
 		elemId: 'logoutbutton',
 		eventName: 'click',
 		callback: logout
+	},
+	{	elemId: 'adversary',
+		eventName: 'change',
+		callback: changeGameMode
 	},
 	{
 		elemId: 'returnToGame',
