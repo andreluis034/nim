@@ -96,6 +96,7 @@ body {
 	background: #e9e9e9;
     width: 100%;
     position: absolute;
+    z-index: 200;
 }
 
 .header  .center {
@@ -413,6 +414,7 @@ option.placeholder {
     width: 100%;
     bottom: 0px;
     background: #e9e9e9;
+    z-index: 200;
 }
 .footer>.center {
     margin-top: 11px;
@@ -674,4 +676,61 @@ option.placeholder {
     flex-direction: column-reverse;
     background-color: #FFF;
     margin-top: auto;
+}
+
+.spanner {
+    background-color: rgba(0, 0, 0, 0.2);
+    position:absolute;
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    width:100%;
+    z-index:100;
+}
+
+.prompt {
+    background-color: #ffffff;
+    opacity: 1;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    height: 160px;
+    width: 340px;
+    margin-top: -130px;
+    margin-left: -170px;
+    z-index: 101;
+}
+
+.promptH2{
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.95312em;
+    font-family: novecento_sansmedium;
+    line-height: 1.2;
+    color: #3889EA;
+    margin: 10px;
+}
+
+.promptH3{
+    margin-top: 0;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1em;
+    font-family: novecento_sansmedium;
+    line-height: 1.2;
+    color: #b4b4b4;
+}
+
+.prompt .button {
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #b4b4b4;
+}
+
+.prompt .button:hover{
+    background-color: #e4431f ;
+}
+
+.alert {
+    color: red;
 }
