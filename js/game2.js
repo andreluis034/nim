@@ -31,8 +31,8 @@ function NimPlay(column, removeCount) {
 
 
 /**
- * @param {Number} size - The size of the ball in pixels
- */
+* @param {Number} size - The size of the ball in pixels
+*/
 function Ball(size){
 	this.element = document.createElement('div');
 	this.element.className = "ball";
@@ -43,8 +43,8 @@ function Ball(size){
 
 
 /**
- * @param {HTMLElement} whereTo - The element where to append this ball to
- */
+* @param {HTMLElement} whereTo - The element where to append this ball to
+*/
 Ball.prototype.appendBall = function(whereTo){
 	whereTo.appendChild(this.element);
 }
@@ -110,10 +110,10 @@ Stack.prototype.removeBallsByIndex = function(index) {
 	switch(this.gameContext.mode){
 		case "Human":
 		console.log("notifying...");
-		this.gameContext.notifyPlay(new NimPlay(this.index,this.balls.length-index));
+		this.gameContext.notifyPlay(new NimPlay(this.index, this.balls.length-index));
 		break;
 		case "Computer":
-		this.gameContext.makePlay(new NimPlay(this.index,this.balls.length-index),"me");
+		this.gameContext.makePlay(new NimPlay(this.index, this.balls.length-index),"me");
 		break;
 	}
 	
@@ -135,11 +135,11 @@ Stack.prototype.removeBalls = function(removeCount){
 */
 
 function NimGame(mode,columnCount, difficultyName, meFirst, domElement,userName,groupNumber,password) {	
-
-	//new NimGame(mode,columns,undefined,undefined,domElement,loginInfo.username,group,loginInfo.password)
 	
+	//new NimGame(mode,columns,undefined,undefined,domElement,loginInfo.username,group,loginInfo.password)
+	domElement.innerHTML = ""
 	playingGame = true;
-
+	
 	this.mode = mode;
 	this.userName = userName;
 	this.columnNumber = columnCount;
@@ -158,41 +158,38 @@ function NimGame(mode,columnCount, difficultyName, meFirst, domElement,userName,
 	}
 	this.domElement = domElement;
 	this.drawGame();
-
-	switch(this.mode){
-		case "Human":
-			this.groupNumber = groupNumber;
-			this.password = password;
-			this.createConnecting();
-			this.joinGame();
-		break;
-		case "Computer":
-			this.meFirst = meFirst;
-			(this.meFirst == "enemyFirst") ? this.myTurn = false : this.myTurn = true;
-			this.howManyPlays = 0;
-			this.difficultyName = difficultyName;
-			this.difficulty = this.difficulties[difficultyName];
-			this.writeTurn();
-			if(!this.myTurn){
-				var context = this;
-				setTimeout(function(){context.makePlay(context.getAiPlay(),"him");}, aiThinkTime);
-			}
-		break;
+	
+	if(this.mode === "Human") {
+		this.groupNumber = groupNumber;
+		this.password = password;
+		this.createConnecting();
+		this.joinGame();
+	}else {
+		this.meFirst = meFirst;
+		(this.meFirst == "enemyFirst") ? this.myTurn = false : this.myTurn = true;
+		this.howManyPlays = 0;
+		this.difficultyName = difficultyName;
+		this.difficulty = this.difficulties[difficultyName];
+		this.writeTurn();
+		if(!this.myTurn){
+			var context = this;
+			setTimeout(function(){context.makePlay(context.getAiPlay(),"him");}, aiThinkTime);
+		}
 	}
-
+	
 	
 }
 
 NimGame.prototype.notifyPlay = function(play){
-
+	
 	console.log(play);
-
+	
 	
 	console.log("LENGTH: "+ this.columns[play.column].balls.length);
 	console.log("REMOVE COUNT: "+play.removeCount);
-
+	
 	var tmpPieces = this.columns[play.column].balls.length-play.removeCount;
-
+	
 	console.log("MAKING REQUEST OF POST OF NOTIFY:");
 	console.log(loginInfo.username);
 	console.log(loginInfo.password);
@@ -200,27 +197,26 @@ NimGame.prototype.notifyPlay = function(play){
 	console.log(play.column);
 	console.log(tmpPieces);
 	console.log("---");
-
+	
 	makeRequest(host, port, "notify", "POST", {nick: loginInfo.username, pass: loginInfo.password,game: this.gameId, stack: play.column, pieces: tmpPieces}, (status, data) => {
 		if(data.error){
 			this.showAlert(data.error);
 		}
-
 		else{
 			console.log("Valid play. Let's wait for the update!");
 		}
 	})
-
+	
 }
 
 NimGame.prototype.updateBoard = function(play, turn){
 	this.cleanAlert();
 	switch(turn){
 		case this.userName:
-			this.appendVerbose("You played in column "+play.column+" and removed "+play.removeCount+" balls.","#3889EA");
+		this.appendVerbose("You played in column "+play.column+" and removed "+play.removeCount+" balls.","#3889EA");
 		break;
 		default:
-			this.appendVerbose(turn+" played in column "+play.column+" and removed "+play.removeCount+" balls.","#b4b4b4");
+		this.appendVerbose(turn+" played in column "+play.column+" and removed "+play.removeCount+" balls.","#b4b4b4");
 		break;
 	}
 	this.columns[play.column].removeBalls(play.removeCount); //here we update the play on our screen!
@@ -235,17 +231,17 @@ NimGame.prototype.onReceiveUpdate = function(data){
 	}
 	else
 	{		
-			if(data.stack!=undefined && data.pieces!=undefined){
-				//new play update being received
-				var ballsRemoved = this.columns[data.stack].balls.length-data.pieces;
-				var play = new NimPlay(data.stack,ballsRemoved);
-				this.updateBoard(play,data.turn);	
-
+		if(data.stack!=undefined && data.pieces!=undefined){
+			//new play update being received
+			var ballsRemoved = this.columns[data.stack].balls.length-data.pieces;
+			var play = new NimPlay(data.stack,ballsRemoved);
+			this.updateBoard(play,data.turn);	
+			
 			if(data.winner!=undefined){
 				this.OnlineGameFinished();
 			}
 		}
-			
+		
 	}
 }
 
@@ -276,13 +272,13 @@ NimGame.prototype.initializeServerEventListener = function(gameId){
 			isConnected == true;
 			context.toggleConnecting();
 		}
-   		var data = JSON.parse(decodeURIComponent(event.data));
-   		context.onReceiveUpdate(data);
- 	}
+		var data = JSON.parse(decodeURIComponent(event.data));
+		context.onReceiveUpdate(data);
+	}
 }
 
 NimGame.prototype.OnlineGameFinished = function(){
-	//TO DO HERE
+	//TODO HERE
 	this.eventSource.close();
 }
 
@@ -311,7 +307,7 @@ NimGame.prototype.showOfflinePoints = function(iWon, iGaveUp) {
 	var finalText = document.createElement('h1');
 	var totalPoints = 1;
 	
-
+	
 	if(iGaveUp){
 		this.pointsBoardTitle.innerHTML = "you gave up. the ai won the game.";
 	}
@@ -336,18 +332,23 @@ NimGame.prototype.showOfflinePoints = function(iWon, iGaveUp) {
 	totalPoints = totalPoints.toFixed(2);
 	finalText.innerHTML = `Total points = <b>${totalPoints}</b>` // "Total points = "+"<b>"+totalPoints+"</b>";
 	this.pointsBoard.appendChild(finalText);
-
+	
 	var buttonContainer = document.createElement('div');
 	buttonContainer.className = "buttons";
 	var changeSettignsButton = document.createElement('input');
 	changeSettignsButton.className = "button right";
 	changeSettignsButton.type = "submit";
 	changeSettignsButton.value = "Change settings";
-	
+	changeSettignsButton.addEventListener('click' , () => {
+		navigate("#")
+	})
 	var playAgainButton = document.createElement('input');
 	playAgainButton.className = "button left";
 	playAgainButton.type = "submit";
 	playAgainButton.value = "Play again";
+	playAgainButton.addEventListener('click', () => {
+		navigate("#/game")
+	})
 	buttonContainer.appendChild(changeSettignsButton)
 	buttonContainer.appendChild(playAgainButton)
 	this.pointsBoard.appendChild(buttonContainer)
@@ -357,7 +358,7 @@ NimGame.prototype.showOfflinePoints = function(iWon, iGaveUp) {
 
 NimGame.prototype.gameFinished = function(iWon, iGaveUp){
 	this.showOfflinePoints(iWon, iGaveUp)
-//	OnGameFinished(this.userName, totalPoints); //TODO
+	//	OnGameFinished(this.userName, totalPoints); //TODO
 	
 	for(var i = this.events.gameFinish.length - 1; i >= 0; --i){
 		this.events.gameFinish[i](this, iWon, iGaveUp)
@@ -370,9 +371,9 @@ NimGame.prototype.cancelMatchMaking = function(){
 		console.log("matchmaking was canceled");
 		console.log(data);
 	})
-
-
-	//TO DO HERE BECAUSE OF PLAY AGAIN ALSO
+	
+	
+	//TODO HERE BECAUSE OF PLAY AGAIN ALSO
 }
 
 NimGame.prototype.createConnecting = function(){
@@ -584,7 +585,7 @@ NimGame.prototype.initializeDOM = function(){
 	confirmation.appendChild(confirmationText);
 	confirmation.appendChild(buttonYes);
 	confirmation.appendChild(buttonNo);
-		
+	
 	this.domElement.appendChild(this.pointsBoard);
 	this.pointsBoard.appendChild(this.pointsBoardTitle);
 	this.pointsBoard.appendChild(hr);
