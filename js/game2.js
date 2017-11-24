@@ -109,11 +109,18 @@ Stack.prototype.appendStack = function(whereTo) {
 Stack.prototype.removeBallsByIndex = function(index) {
 	switch(this.gameContext.mode){
 		case "Human":
-		console.log("notifying...");
-		this.gameContext.notifyPlay(new NimPlay(this.index, this.balls.length-index));
+			console.log("notifying...");
+			this.gameContext.notifyPlay(new NimPlay(this.index, this.balls.length-index));
 		break;
 		case "Computer":
-		this.gameContext.makePlay(new NimPlay(this.index, this.balls.length-index),"me");
+			if(!this.gameContext.myTurn)
+			{
+				this.gameContext.showAlert("Please Wait for the opponent to play");		
+			}
+			else
+			{
+				this.gameContext.makePlay(new NimPlay(this.index, this.balls.length-index));
+			}
 		break;
 	}
 	
@@ -140,7 +147,9 @@ function NimGame(mode,columnCount, difficultyName, meFirst, domElement,userName,
 	domElement.innerHTML = ""
 	playingGame = true;
 	
+
 	this.mode = mode;
+	this.isOffline = this.mode === "Computer";
 	this.userName = userName;
 	this.columnNumber = columnCount;
 	this.verboseMode = false;
@@ -167,13 +176,14 @@ function NimGame(mode,columnCount, difficultyName, meFirst, domElement,userName,
 	}else {
 		this.meFirst = meFirst;
 		(this.meFirst == "enemyFirst") ? this.myTurn = false : this.myTurn = true;
+		console.log("NO INICIO: "+this.myTurn);
 		this.howManyPlays = 0;
 		this.difficultyName = difficultyName;
 		this.difficulty = this.difficulties[difficultyName];
 		this.writeTurn();
 		if(!this.myTurn){
 			var context = this;
-			setTimeout(function(){context.makePlay(context.getAiPlay(),"him");}, aiThinkTime);
+			setTimeout(function(){context.makePlay(context.getAiPlay());}, aiThinkTime);
 		}
 	}
 	
@@ -210,16 +220,19 @@ NimGame.prototype.notifyPlay = function(play){
 }
 
 NimGame.prototype.updateBoard = function(play, turn){
+
 	this.cleanAlert();
-	switch(turn){
-		case this.userName:
+
+	if(turn != this.userName)
+	{
 		this.appendVerbose("You played in column "+play.column+" and removed "+play.removeCount+" balls.","#3889EA");
-		break;
-		default:
-		this.appendVerbose(turn+" played in column "+play.column+" and removed "+play.removeCount+" balls.","#b4b4b4");
-		break;
+
 	}
-	this.columns[play.column].removeBalls(play.removeCount); //here we update the play on our screen!
+	else
+	{
+		this.appendVerbose(this.opponentName+" played in column "+play.column+" and removed "+play.removeCount+" balls.","#b4b4b4");
+	}
+	this.makePlay(play);
 }
 
 NimGame.prototype.onReceiveUpdate = function(data){
@@ -231,17 +244,21 @@ NimGame.prototype.onReceiveUpdate = function(data){
 	}
 	else
 	{		
+
+		if(data.turn!=undefined && data.turn!=this.userName){
+				this.opponentName = data.turn;
+			}
+
 		if(data.stack!=undefined && data.pieces!=undefined){
 			//new play update being received
 			var ballsRemoved = this.columns[data.stack].balls.length-data.pieces;
 			var play = new NimPlay(data.stack,ballsRemoved);
-			this.updateBoard(play,data.turn);	
-			
-			if(data.winner!=undefined){
-				this.OnlineGameFinished();
-			}
+			this.updateBoard(play,data.turn);				
 		}
-		
+
+		if(data.winner!=undefined){
+				this.OnlineGameFinished(data);
+		}
 	}
 }
 
@@ -277,9 +294,64 @@ NimGame.prototype.initializeServerEventListener = function(gameId){
 	}
 }
 
-NimGame.prototype.OnlineGameFinished = function(){
-	//TODO HERE
+NimGame.prototype.showOnlineEnding = function(message,color){
+
+	console.log(message);
+	playingGame = false;
+	this.boardContainer.style.display = "none";
+	var onlineEnding = document.createElement('div');
+	var h1 = document.createElement('div');
+	var buttonPlayAgain = document.createElement('div');
+	var buttonLeaderboards = document.createElement('div');
+	buttonPlayAgain.className = "button";
+	buttonPlayAgain.innerHTML = "Play Again";
+	buttonLeaderboards.className = "button";
+	buttonLeaderboards.innerHTML = "Leaderboards";
+
+	buttonPlayAgain.addEventListener('click', () => {
+		navigate("#")
+	})
+
+	buttonLeaderboards.addEventListener('click', () => {
+		navigate("#/leaderboard")
+	})
+
+	h1.className = "onlineEndingH1";
+	h1.innerHTML = message;
+	h1.style.color = color;
+	onlineEnding.className = "onlineEnding";
+
+	onlineEnding.appendChild(h1);
+	onlineEnding.appendChild(buttonPlayAgain);
+	onlineEnding.appendChild(buttonLeaderboards);
+
+	this.domElement.appendChild(onlineEnding);
+}
+
+NimGame.prototype.OnlineGameFinished = function(data){
+
 	this.eventSource.close();
+
+	if(data.stack!=undefined){
+		//smooth ending
+		if(data.winner == this.userName){
+			this.showOnlineEnding("you won! congratulations!","#3889EA");
+		}
+		else{
+			this.showOnlineEnding("you lost. try harder next time!","#b4b4b4");
+		}
+	}
+	else{
+		//somebody gave up.
+		if(data.winner == this.userName){
+			this.showOnlineEnding("The enemy gave up. You won!","#3889EA");
+		}
+		else{
+			this.showOnlineEnding("what a fool. already giving up?","#b4b4b4");
+		}
+	}
+	console.log("ACABOU CARALHO.");
+	
 }
 
 NimGame.prototype.showOfflinePoints = function(iWon, iGaveUp) {
@@ -357,7 +429,16 @@ NimGame.prototype.showOfflinePoints = function(iWon, iGaveUp) {
 
 
 NimGame.prototype.gameFinished = function(iWon, iGaveUp){
-	this.showOfflinePoints(iWon, iGaveUp)
+
+	if(this.isOffline){
+		this.showOfflinePoints(iWon, iGaveUp);
+	}
+
+	else{
+		makeRequest(host, port, "leave", "POST", {game: this.gameId, nick: this.userName, pass: this.password},(status, data) => {
+
+		})
+	}
 	//	OnGameFinished(this.userName, totalPoints); //TODO
 	
 	for(var i = this.events.gameFinish.length - 1; i >= 0; --i){
@@ -370,10 +451,9 @@ NimGame.prototype.cancelMatchMaking = function(){
 	makeRequest(host, port, "leave", "POST", {game: this.gameId, nick: this.userName, pass: this.password},(status, data) => {
 		console.log("matchmaking was canceled");
 		console.log(data);
+		playingGame = false;
+		navigate("#")
 	})
-	
-	
-	//TODO HERE BECAUSE OF PLAY AGAIN ALSO
 }
 
 NimGame.prototype.createConnecting = function(){
@@ -434,31 +514,34 @@ NimGame.prototype.appendVerbose = function(message,color){
 	this.verboseText.scrollTop = this.verboseText.scrollHeight;	
 }
 
-NimGame.prototype.makePlay = function(play,whoPlays){
-	if((whoPlays == "me" && this.myTurn) || (whoPlays == "him" && !this.myTurn)){
+NimGame.prototype.makePlay = function(play){
+
 		this.columns[play.column].removeBalls(play.removeCount);
-		this.myTurn = !this.myTurn;
-		this.showAlert("");
-		this.writeTurn();
-		
-		if(this.isOver()){
-			this.gameFinished(!this.myTurn,false);
-			return;
-		}
-		if(whoPlays == "me"){
-			this.howManyPlays++;
-			this.appendVerbose("You played in column "+play.column+" and removed "+play.removeCount+" balls.","#3889EA");
-			var context = this;
-			setTimeout(function(){context.makePlay(context.getAiPlay(),"him");}, aiThinkTime);		
-		}
-		else{
-			this.appendVerbose("The opponent played in column "+play.column+" and removed "+play.removeCount+" balls.","#b4b4b4");
-		}
-	}
-	else{
-		this.showAlert("Please Wait for the opponent to play");
-		return;
-	}
+		this.cleanAlert();
+
+		if(this.mode == "Computer"){
+
+			if(this.isOver()){
+				this.gameFinished(this.myTurn,false);
+				return;
+			}
+
+			if(this.myTurn){
+				this.appendVerbose("You played in column "+play.column+" and removed "+play.removeCount+" balls.","#3889EA");
+				this.myTurn = !this.myTurn;
+				this.writeTurn();
+				this.howManyPlays++;
+				var context = this;
+				setTimeout(function(){context.makePlay(context.getAiPlay());}, aiThinkTime);
+			}
+			else{				
+				this.myTurn = !this.myTurn;
+				this.writeTurn();
+				this.appendVerbose("The opponent played in column "+play.column+" and removed "+play.removeCount+" balls.","#b4b4b4");
+			}		
+
+		}	
+
 }
 
 NimGame.prototype.initializeDOM = function(){
@@ -515,9 +598,11 @@ NimGame.prototype.initializeDOM = function(){
 	
 	this.confirmationContainer = document.createElement('div');
 	this.confirmationContainer.style.visibility = "hidden";
+	this.confirmationContainer.className = "spanner";
+
 	
 	var confirmation = document.createElement('div');
-	
+	confirmation.className = "giveUpPrompt";
 	var confirmationText = document.createElement('h1');
 	confirmationText.innerHTML = "Give up?";
 	
@@ -525,15 +610,15 @@ NimGame.prototype.initializeDOM = function(){
 	
 	var buttonYes = document.createElement('div');
 	buttonYes.className = "button";
-	buttonYes.innerHTML = "yes"
+	buttonYes.innerHTML = "Yes"
 	
 	buttonYes.addEventListener("click", function() {
-		context.gameFinished(false,true);
+			context.gameFinished(false,true);
 	}, false);
 	
 	var buttonNo = document.createElement('div');
 	buttonNo.className = "button";
-	buttonNo.innerHTML = "no";
+	buttonNo.innerHTML = "No";
 	
 	buttonNo.addEventListener("click", function() {
 		context.hideGiveUp();
@@ -546,6 +631,8 @@ NimGame.prototype.initializeDOM = function(){
 	
 	this.pointsBoard = document.createElement('div');
 	
+	this.pointsBoard.className = "pointsBoard";
+
 	
 	this.pointsBoardTitle = document.createElement('h1');
 	this.pointsBoardTitle.className ="title";

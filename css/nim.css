@@ -734,3 +734,105 @@ option.placeholder {
 .alert {
     color: red;
 }
+
+.onlineEnding {
+    position: relative;
+    height: 260px;
+    width: 740px;
+    background-color: #ffffff;
+    border: solid;
+    border-width: 1px;
+    border-color: #dfdfdf;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 200px;
+}
+
+.onlineEndingH1 {
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.95312em;
+    font-family: novecento_sansmedium;
+    line-height: 1.2;
+    margin: 10px;
+    margin-top: 30px;
+}
+
+.onlineEnding .button {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    width: 55%;
+}
+
+.giveUpPrompt {
+    background-color: #ffffff;
+    opacity: 1;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    height: 260px;
+    width: 500px;
+    margin-top: -180px;
+    margin-left: -250px;
+    z-index: 101;
+}
+
+.giveUpPrompt > h1{
+   text-align: center;
+    font-weight: 700;
+    font-size: 1.95312em;
+    font-family: novecento_sans_bookbold;
+    line-height: 1.2;
+    color: #3889EA;
+    margin: 10px;
+    margin-top: 30px;
+}
+
+.giveUpPrompt .button {
+    background-color: #b4b4b4;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    width: 55%;
+}
+
+.giveUpPrompt .button:hover {
+    background-color: #3889EA;
+}
+
+.pointsBoard {
+    background-color: #ffffff;
+    border: solid;
+    border-width: 1px;
+    border-color: #dfdfdf;
+    width: 740px;
+    height: 480px;
+    margin-left: auto;
+    margin-right: auto;
+    z-index: 101;
+}
+
+.pointsBoard .button {
+    margin: 20px;
+    width: 44.5%;
+}
+
+.pointsBoard > hr{
+    border-style: none;
+    background-color: #b4b4b4; 
+    height: 2px;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.pointsBoard > h1{
+    font-family: novecento_sans_bookbold;
+    color: #3889EA;
+}
+
+.pointsBoard > h2,h3{
+    font-family: novecento_sansmedium;
+    color: #b4b4b4;
+}

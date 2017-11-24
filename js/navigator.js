@@ -75,17 +75,19 @@ const pages = {
 				var difficulty = (children[3].value);
 				var group = parseInt(children[4].value)
 
+				console.log("WHAT?");
+				console.log(columns);
+				console.log("----------------------------------");
+				console.log(children[0].value);
+				console.log(children[1].value);
+				console.log(children[2].value);
+				console.log(children[3].value);
+				console.log(children[4].value);
+				console.log("----------------------------------");
+
 				var game = new NimGame(gameType,columns,difficulty,playingFirst,domElement,loginInfo.username,group,loginInfo.password);
 
-				//console.log("WHAT?");
-				//console.log(columns);
-				//console.log("----------------------------------");
-				//console.log(children[0].value);
-				//console.log(children[1].value);
-				//console.log(children[2].value);
-				//console.log(children[3].value);
-				//console.log(children[4].value);
-				//console.log("----------------------------------");
+				
 			}
 			bigHeaderHandler(false)
 		}
