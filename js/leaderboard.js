@@ -1,33 +1,34 @@
 var leaderboard = [
-	{name: "Fayaru", 			np: 1337},
-	{name: "Arukiap", 			np: 1336},
-	{name: "boilknote", 		np: 213},
-	{name: "yat0++",			np: 37},
-	{name: "El_Rocha", 			np: 20},
-	{name: "Eirne", 			np: 10}
+	{nick: "Fayaru", 			np: 1337},
+	{nick: "Arukiap", 			np: 1336},
+	{nick: "boilknote", 		np: 213},
+	{nick: "yat0++",			np: 37},
+	{nick: "El_Rocha", 			np: 20},
+	{nick: "Eirne", 			np: 10}
 ]
 var supportStorage = ((typeof window.localStorage) !== 'undefined')
 
-var isOfflineActive
+var isOfflineActive = true
 /**
  * Creates a leaderboard on the given div(tbody)
  * @param {HTMLTableSectionElement} div 
- * @param {*} leadeboard
- * @param {Boolean} online
+ * @param {*} leadeboar
  */
-function buildLeaderboard(div, leadeboard, online)
+function buildLeaderboard(div, leadeboar)
 {
 	while(div.firstChild)
 		div.removeChild(div.firstChild)
 		
-	for(var i = 0; i < leaderboard.length; ++i) {
+	console.log(leadeboar.length)
+	for(var i = 0; i < leadeboar.length; ++i) {
+		console.log(i)
 		var elem = document.createElement('tr')
 		var user = document.createElement('th')
 		var np = document.createElement('th')
 		user.className = 'user'
-		user.textContent = leaderboard[i].name
+		user.textContent = leadeboar[i].nick
 		np.className = 'victories'
-		np.textContent = leaderboard[i].np
+		np.textContent = isOfflineActive ? leadeboar[i].np : leadeboar[i].victories
 		elem.appendChild(user)
 		elem.appendChild(np)
 		div.appendChild(elem)
@@ -64,10 +65,32 @@ function OnGameFinished(username, points) {
  * Handles the load of the leaderboard page
  */
 function OnLeaderBoardPageLoad() {
-	buildLeaderboard(document.getElementById('big-leaderboard'))
-	
+	var leaderboardElement = document.getElementById('big-leaderboard');
+	if(isOfflineActive)
+		buildLeaderboard(leaderboardElement, leaderboard)
+	else {
+		makeRequest("ranking", "POST", {size: 10}, (status, data) => {
+			console.log(data.ranking)
+			if(data.error)
+				return
+			buildLeaderboard(leaderboardElement, data.ranking)
+		})
+	}
 }
 
+function OnChangeLeaderboardType(type) {
+	if(type === "offline") {
+		document.getElementById('offline-lb').className = "mode active"
+		document.getElementById('online-lb').className = "mode"
+		isOfflineActive = true
+	}
+	else {
+		document.getElementById('offline-lb').className = "mode"
+		document.getElementById('online-lb').className = "mode active"
+		isOfflineActive = false
+	}
+	navigate("#/leaderboard")
+}
 
 if(supportStorage) {
 	var temp = window.localStorage.getItem('leaderboard')

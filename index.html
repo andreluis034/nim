@@ -7,6 +7,7 @@
 	<!-- Android Chrome theme color -->
 	<meta name="theme-color" content="#3889EA" />
 	<link rel="stylesheet" type="text/css" href="css/nim.css">
+	<script src="js/NimApi.js"></script>
 	<script src="js/leaderboard.js"></script>
 	<script src="js/game2.js"></script>
 	<script src="js/navigator.js"></script>
@@ -92,13 +93,13 @@
 			</div>
 			<div id="leaderboard" class="container">
 				<h2 class="general">Leaderboard</h2>
-				<div class="mode" id="offline-lb">offline</div>
+				<div class="mode active" id="offline-lb">offline</div>
 				<div class="mode" id="online-lb">online</div>
 				<table class="leaderboard">
 					<thead>
 						<tr>
 							<th class="user">User</th>
-							<th class="victories">Nim Points</th>
+							<th class="victories">Points</th>
 						</tr>
 					</thead>
 					<tbody id="big-leaderboard">

@@ -2,8 +2,7 @@
 //url -> div
 var root_pages;
 const selectsToReset = ['adversary', 'playOrder', 'gamedifficulty'];
-const host = "twserver.alunos.dcc.fc.up.pt"
-const port = 8008;
+
 var loginInfo = {
 	signedIn: false,
 	username: null
@@ -49,6 +48,8 @@ const pages = {
 		div: null,
 		onload: function() {
 			//resetSelects()
+			OnLeaderBoardPageLoad()
+			//buildLeaderboard(document.getElementById('big-leaderboard'))
 			bigHeaderHandler(true)
 		}
 	},
@@ -130,7 +131,6 @@ function getDivForUrl(url) {
 /**
  * Navigates to the given URL
  * @param {String} url 
- * @param {Bool} triggerEvent
  */
 function navigate(url) {
 	if(url === "")
@@ -229,24 +229,6 @@ function throwJoinError(id){
 	}
 }
 
-function makeRequest(host, port, command, method, data, callback) {
-
-	//console.log(host_ + "    " + port_);
-
-	var xhr = new XMLHttpRequest();
-	xhr.onreadystatechange = function() {
-		console.log(xhr.readyState )
-		console.log(xhr.status )
-		if(xhr.readyState != 4)
-			return
-		callback(xhr.status, JSON.parse(xhr.responseText))
-	}
-	xhr.open(method, `http://${host}:${port}/${command}`);
-	//xhr.setRequestHeader("Content-Type", "application/json");
-	xhr.send(JSON.stringify(data))
-}
-
-
 function login(event) {
 	loginInfo.username = document.getElementById('username_box').value
 	loginInfo.password = document.getElementById('password_box').value
@@ -332,6 +314,16 @@ var FormEvents = [
 		elemId: 'returnToGame',
 		eventName: 'click',
 		callback: (event) => { navigate('#/game') }
+	},
+	{
+		elemId: 'offline-lb',
+		eventName: 'click',
+		callback: () => {OnChangeLeaderboardType("offline")} 
+	},
+	{
+		elemId: 'online-lb',
+		eventName: 'click',
+		callback: () => {OnChangeLeaderboardType("online")} 
 	}
 ]
 var initialPageNotAllowed = ['#/game', '#/logout']
