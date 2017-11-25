@@ -8,12 +8,14 @@ var leaderboard = [
 ]
 var supportStorage = ((typeof window.localStorage) !== 'undefined')
 
-
+var isOfflineActive
 /**
  * Creates a leaderboard on the given div(tbody)
  * @param {HTMLTableSectionElement} div 
+ * @param {*} leadeboard
+ * @param {Boolean} online
  */
-function buildLeaderboard(div)
+function buildLeaderboard(div, leadeboard, online)
 {
 	while(div.firstChild)
 		div.removeChild(div.firstChild)
@@ -57,6 +59,15 @@ function OnGameFinished(username, points) {
 	if(supportStorage)
 		window.localStorage.setItem('leaderboard', JSON.stringify(leaderboard))
 }
+
+/**
+ * Handles the load of the leaderboard page
+ */
+function OnLeaderBoardPageLoad() {
+	buildLeaderboard(document.getElementById('big-leaderboard'))
+	
+}
+
 
 if(supportStorage) {
 	var temp = window.localStorage.getItem('leaderboard')

@@ -48,8 +48,7 @@ const pages = {
 		divID: "leaderboard",
 		div: null,
 		onload: function() {
-			resetSelects()
-			buildLeaderboard(document.getElementById('big-leaderboard'))
+			//resetSelects()
 			bigHeaderHandler(true)
 		}
 	},
