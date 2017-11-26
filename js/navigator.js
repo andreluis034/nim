@@ -14,6 +14,7 @@ function homepageOnLoad() {
 	cleanError();
 
 	if(!loginInfo.signedIn) {
+		var timer = new Timer(2,0,document.getElementById('login-form'),200);
 		document.getElementById('configuration').style.display = 'none'
 		document.getElementById('login-form').style.display = 'block'
 	}
