@@ -4,6 +4,9 @@ var timerContext;
 
 function Timer(minutes,seconds,domEllement,size){
 
+	this.minutesLock = minutes;
+	this.secondsLock = seconds;
+
 	timerContext = this;
 
 	this.canvas = document.createElement('canvas');
@@ -43,16 +46,22 @@ Timer.prototype.initializeStyle = function(size,positiveColor,negativeColor,line
 }
 
 Timer.prototype.clearCanvas = function(){
-	this.context.clearRect(0, 0, timerContext.canvas.width, timerContext.canvas.height);
+	this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
   	this.context.beginPath();	
+}
+
+Timer.prototype.resetTimer = function(){
+	this.minutes = this.minutesLock;
+	this.seconds = this.secondsLock;
+	this.endTime = this.currentTime + (60*this.minutes+this.seconds)*1000;
 }
 
 Timer.prototype.writeTime = function(){
 	if(this.seconds<10){
-  		this.context.fillText(`${timerContext.minutes}:0${timerContext.seconds}`,this.center,this.center);
+  		this.context.fillText(`${this.minutes}:0${this.seconds}`,this.center,this.center);
   	}
   	else{
-  		this.context.fillText(`${timerContext.minutes}:${timerContext.seconds}`,this.center,this.center);
+  		this.context.fillText(`${this.minutes}:${this.seconds}`,this.center,this.center);
   	}
 }
 
