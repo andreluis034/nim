@@ -3,95 +3,92 @@
 var timerContext;
 
 function Timer(minutes,seconds,domEllement,size){
+
 	timerContext = this;
-	this.currentTime = seconds;
-	this.domEllement = domEllement;
-	this.size = size;
+
 	this.canvas = document.createElement('canvas');
 	this.canvas.id = "canvasID";
 	this.canvas.width = size;
 	this.canvas.height = size;
-	this.domEllement.appendChild(this.canvas);
+	domEllement.appendChild(this.canvas);
 
 	this.context=this.canvas.getContext("2d");
-	this.blueColor = "#3889EA";
-	this.greyColor = "#e9e9e9";
-	this.lineWidth = 5;
-	this.center = this.size/2;
-	this.radius = this.size/2 - this.lineWidth;
-	this.context.lineWidth=this.lineWidth;
-	this.context.strokeStyle=this.blueColor;
-	this.context.textBaseline = 'middle';
-	this.context.textAlign="center"; 
-	this.context.font="60px Arial";
-	this.context.fillStyle = this.blueColor;
 
+	this.initializeStyle(size,"#3889EA","#e9e9e9",5,60);
+	
 	this.totalTime = (minutes*60+seconds)*1000;
-	this.endTime = new Date().getTime() + this.totalTime; // convert the second to ms
 	this.startTime = new Date().getTime();
+	this.endTime = this.startTime + this.totalTime; // convert the second to ms
 	this.currentTime = this.startTime;
 
 	this.minutes = minutes;
 	this.seconds = seconds;
+	this.circleInterval = 2*Math.PI;
 
-	var distance = this.endTime-this.currentTime;
-	var roundedDistance = Math.round(distance / 100) * 100;
-	var minutes = Math.floor((roundedDistance % (1000 * 60 * 60)) / (1000 * 60));
-	var seconds = Math.floor((roundedDistance % (1000 * 60)) / 1000);
 	this.drawTimer();
+}
+
+Timer.prototype.initializeStyle = function(size,positiveColor,negativeColor,lineWidth,fontSize){
+	this.positiveColor = positiveColor;
+	this.negativeColor = negativeColor;
+	this.lineWidth = lineWidth;
+	this.center = size/2;
+	this.radius = size/2 - lineWidth;
+	this.context.lineWidth=lineWidth;
+	this.context.strokeStyle=positiveColor;
+	this.context.textBaseline = 'middle';
+	this.context.textAlign="center"; 
+	this.context.font=fontSize+"px Arial";
+	this.context.fillStyle = positiveColor;
+}
+
+Timer.prototype.clearCanvas = function(){
+	this.context.clearRect(0, 0, timerContext.canvas.width, timerContext.canvas.height);
+  	this.context.beginPath();	
+}
+
+Timer.prototype.writeTime = function(){
+	if(this.seconds<10){
+  		this.context.fillText(`${timerContext.minutes}:0${timerContext.seconds}`,this.center,this.center);
+  	}
+  	else{
+  		this.context.fillText(`${timerContext.minutes}:${timerContext.seconds}`,this.center,this.center);
+  	}
+}
+
+Timer.prototype.drawArc = function(start,end,color){
+	this.context.strokeStyle = color;
+	this.context.arc(this.center,this.center,this.radius,start,end);
+	this.context.stroke();
+	this.context.beginPath();
+	this.context.closePath();
 }
 
 Timer.prototype.drawTimer = function(){
 
-	var context = timerContext.context;
+	this.clearCanvas();
+	this.writeTime();	
 
-	context.clearRect(0, 0, timerContext.canvas.width, timerContext.canvas.height);
-  	context.beginPath();	
+	this.currentTime = new Date().getTime();
 
-  	if(timerContext.seconds<10){
-  		context.fillText(`${timerContext.minutes}:0${timerContext.seconds}`,timerContext.center,timerContext.center);
-  	}
-  	else{
-  		context.fillText(`${timerContext.minutes}:${timerContext.seconds}`,timerContext.center,timerContext.center);
-  	}
-
-	
-
-	timerContext.currentTime = new Date().getTime();
-	var distance = timerContext.endTime - timerContext.currentTime;
-	var percentage = distance*100/timerContext.totalTime;
-
-	var circleInterval = 2*Math.PI;
+	var distance = this.endTime - this.currentTime;
+	var percentage = distance*100/this.totalTime;
 	var unPercentage = 100 - percentage;
+	var decrease = unPercentage/100*this.circleInterval;
+	var increase = percentage/100*this.circleInterval;
 
-	//console.log(unPercentage);
+	this.drawArc(-0.5*Math.PI,1.5*Math.PI-decrease,this.positiveColor);
 
-	var decrease = unPercentage/100*circleInterval;
-	var increase = percentage/100*circleInterval;
+	this.drawArc(1.5*Math.PI+increase,1.5*Math.PI,this.negativeColor);
 
-	context.strokeStyle = timerContext.blueColor;
-
-	context.arc(timerContext.center,timerContext.center,timerContext.radius,-0.5*Math.PI,(1.5*Math.PI-decrease));
-
-	context.stroke();
-
-	context.beginPath();
-	context.closePath();
-
-	context.strokeStyle = timerContext.greyColor;
-
-	context.arc(timerContext.center,timerContext.center,timerContext.radius,1.5*Math.PI+increase,1.5*Math.PI);
-
-	context.stroke();
-
-	window.requestAnimationFrame(timerContext.drawTimer);
+	window.requestAnimationFrame(this.drawTimer.bind(this));
 }
 
 
 this.runTimer = setInterval(function(){
 	var currentTime = new Date().getTime();
 	var distance = timerContext.endTime-currentTime;
-	var roundedDistance = Math.round(distance / 100) * 100;
-	timerContext.minutes = Math.floor((roundedDistance % (1000 * 60 * 60)) / (1000 * 60));
-	timerContext.seconds = Math.floor((roundedDistance % (1000 * 60)) / 1000);
+	distance = Math.round(distance / 100) * 100;
+	timerContext.minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+	timerContext.seconds = Math.floor((distance % (1000 * 60)) / 1000);
 },1000);
