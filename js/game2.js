@@ -242,6 +242,7 @@ NimGame.prototype.onReceiveUpdate = function(data){
 			this.opponentName = data.turn;
 		}
 		this.myTurn = data.turn === this.userName
+		this.writeTurn()
 		console.log(data.turn)
 		console.log(this.userName)
 		if(data.stack !== undefined && data.pieces !== undefined){
@@ -282,12 +283,16 @@ NimGame.prototype.initializeServerEventListener = function(gameId){
 	var context = this;
 	this.eventSource.onmessage = function(event) {
 		console.log("RECEIVED AN UPDATE!")
+		console.log(event)
+		if(event.data == "{}")
+			return
 		if(!this.isConnected){
 			//here we let the user know somebody is ready to play.
 			this.isConnected = true;
 			context.toggleConnecting();
 		}
-		var data = JSON.parse(decodeURIComponent(event.data));
+
+		var data = JSON.parse(event.data);
 		context.onReceiveUpdate(data);
 	}
 }
