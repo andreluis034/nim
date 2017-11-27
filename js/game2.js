@@ -191,28 +191,11 @@ function NimGame(mode,columnCount, difficultyName, meFirst, domElement,userName,
 
 NimGame.prototype.notifyPlay = function(play){
 	
-	console.log(play);
-	
-	
-	console.log("LENGTH: "+ this.columns[play.column].balls.length);
-	console.log("REMOVE COUNT: "+play.removeCount);
-	
 	var tmpPieces = this.columns[play.column].balls.length-play.removeCount;
-	
-	console.log("MAKING REQUEST OF POST OF NOTIFY:");
-	console.log(loginInfo.username);
-	console.log(loginInfo.password);
-	console.log(this.gameId);
-	console.log(play.column);
-	console.log(tmpPieces);
-	console.log("---");
 	
 	makeRequest("notify", "POST", {nick: loginInfo.username, pass: loginInfo.password,game: this.gameId, stack: play.column, pieces: tmpPieces}, (status, data) => {
 		if(data.error){
 			this.showAlert(data.error);
-		}
-		else{
-			console.log("Valid play. Let's wait for the update!");
 		}
 	})
 	
@@ -229,9 +212,7 @@ NimGame.prototype.writePlay = function(play, name, color)  {
 }
 
 NimGame.prototype.onReceiveUpdate = function(data){
-	console.log("\n\n\nRECEIVED UPDATE");
-	console.log(data);
-	console.log("\n\n\n");
+
 	if(data.error){
 		console.log(data);
 	}
@@ -262,23 +243,19 @@ NimGame.prototype.onReceiveUpdate = function(data){
  * Joins the online game
  */
 NimGame.prototype.joinGame = function(){
-	//console.log("SIZE IS GOING TO BE "+this.columnNumber);
 	makeRequest("join", "POST", {group: this.groupNumber, nick: this.userName, pass: this.password, size: this.columnNumber},(status, data) => {
 		if(data.error){
 			console.log(data.error);
 		}
 		else{
-			console.log(data);
 			this.gameId = data.game;
 			this.initializeServerEventListener(data.game);	
-			console.log("Waiting for other player...");
 		}
 	})
 }
 
 NimGame.prototype.initializeServerEventListener = function(gameId){
 	//we wait for updates to do stuff
-	//console.log("Fetching from ... "+ `http://${host}:${port}/update?nick=${this.userName}&game=${gameId}`);
 	this.eventSource = new EventSource(`http://${host}:${port}/update?nick=${this.userName}&game=${gameId}`);
 	var context = this;
 	this.eventSource.onmessage = function(event) {
@@ -712,7 +689,7 @@ NimGame.prototype.initializeBoard = function() {
 			column.pushToStack(ball);
 		}
 		column.appendStack(this.canvas);
-		this.columns[i]=column; //store dem stacks on the array of this NimGame object
+		this.columns[i]=column;
 		counter+=1;
 	}
 }
@@ -736,13 +713,9 @@ NimGame.prototype.initializeColumns = function() {
 */
 NimGame.prototype.nimSum = function() {
 	var nimSum = this.columns[0].balls.length;
-	console.log("nimSum = "+nimSum);
 	for (var i = 1; i < this.columns.length; i++) {
 		nimSum = nimSum ^ this.columns[i].balls.length;
-		console.log("nimSum = "+nimSum);
 	}
-	console.log("Return nimSum of "+nimSum);
-	console.log("\n\n---\n\n");
 	return nimSum;
 }
 
@@ -777,7 +750,6 @@ NimGame.prototype.getRandomValidColumn = function() {
 	for(var i = this.columns.length - 1; i >= 0; --i) {
 		if(this.columns[i].balls.length > 0){
 			valid.push(i)
-			console.log("Pushing: "+i);
 		}
 	}
 	return valid[randomBetween(0, valid.length - 1)]
@@ -786,20 +758,14 @@ NimGame.prototype.getRandomValidColumn = function() {
 NimGame.prototype.getAiPlay = function() {
 	console.log("getting AI play...");
 	var nimSum = this.nimSum()
-	console.log("nimSum: "+nimSum);
 	if(nimSum === 0 || this.shouldPlayRandom()) {
 		var column = this.getRandomValidColumn();
-		console.log("Playing random...");
-		console.log("column chosen is "+column);
 		//console.log("aaPlaying in column "+column+" And "+randomBetween(0, this.columns[column].length));
 		return new NimPlay(column, randomBetween(1, this.columns[column].balls.length))
 	}
 	for(var i = 0; i < this.columns.length; ++i) {
 		if((this.columns[i].balls.length ^ nimSum) < this.columns[i].balls.length) {
-			console.log("Playing legit...");
-			console.log("i: "+i+" this.columns[i].balls.length: "+this.columns[i].balls.length+" nimSum: "+nimSum);
 			var ballsToRemove = this.columns[i].balls.length - (this.columns[i].balls.length ^ nimSum);
-			console.log("Playing in column "+i+" And "+ballsToRemove);
 			return new NimPlay(i, ballsToRemove);
 		}
 	}
