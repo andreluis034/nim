@@ -234,12 +234,10 @@ function login(event) {
 	loginInfo.username = document.getElementById('username_box').value
 	loginInfo.password = document.getElementById('password_box').value
 
-	makeRequest(host, port, "register", "POST", {nick: loginInfo.username, pass: loginInfo.password}, (status, data) => {
+	makeRequest("register", "POST", {nick: loginInfo.username, pass: loginInfo.password}, (status, data) => {
 		if(data.error){
 			throwJoinError(event.target.id);
-		}
-
-		else{
+		}else{
 			loginInfo.signedIn = true
 			navigate('#')
 			console.log(data)

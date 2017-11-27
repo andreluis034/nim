@@ -167,7 +167,7 @@ function NimGame(mode,columnCount, difficultyName, meFirst, domElement,userName,
 	this.domElement = domElement;
 	this.drawGame();
 	
-	if(this.mode === "Human") {
+	if(!this.isOffline) {
 		this.groupNumber = groupNumber;
 		this.password = password;
 		this.createConnecting();
@@ -207,7 +207,7 @@ NimGame.prototype.notifyPlay = function(play){
 	console.log(tmpPieces);
 	console.log("---");
 	
-	makeRequest(host, port, "notify", "POST", {nick: loginInfo.username, pass: loginInfo.password,game: this.gameId, stack: play.column, pieces: tmpPieces}, (status, data) => {
+	makeRequest("notify", "POST", {nick: loginInfo.username, pass: loginInfo.password,game: this.gameId, stack: play.column, pieces: tmpPieces}, (status, data) => {
 		if(data.error){
 			this.showAlert(data.error);
 		}
@@ -224,8 +224,8 @@ NimGame.prototype.notifyPlay = function(play){
 * @param {String} name - The name of the players that played 
 * @param {String} color - The color of the text
 */
-NimGame.prototype.writePlay = function(play, name)  {
-	this.verboseMode(`${name} played in the column ${play.column} and removed ${play.removeCount} balls`, color)	
+NimGame.prototype.writePlay = function(play, name, color)  {
+	this.appendVerbose(`${name} played in the column ${play.column} and removed ${play.removeCount} balls`, color)	
 }
 
 NimGame.prototype.onReceiveUpdate = function(data){
@@ -242,6 +242,8 @@ NimGame.prototype.onReceiveUpdate = function(data){
 			this.opponentName = data.turn;
 		}
 		this.myTurn = data.turn === this.userName
+		console.log(data.turn)
+		console.log(this.userName)
 		if(data.stack !== undefined && data.pieces !== undefined){
 			//new play update being received
 			var ballsRemoved = this.columns[data.stack].balls.length-data.pieces;
@@ -260,7 +262,7 @@ NimGame.prototype.onReceiveUpdate = function(data){
  */
 NimGame.prototype.joinGame = function(){
 	//console.log("SIZE IS GOING TO BE "+this.columnNumber);
-	makeRequest(host, port, "join", "POST", {group: this.groupNumber, nick: this.userName, pass: this.password, size: this.columnNumber},(status, data) => {
+	makeRequest("join", "POST", {group: this.groupNumber, nick: this.userName, pass: this.password, size: this.columnNumber},(status, data) => {
 		if(data.error){
 			console.log(data.error);
 		}
@@ -445,7 +447,7 @@ NimGame.prototype.gameFinished = function(iWon, iGaveUp, data){
 	
 	else{
 		if(iGaveUp) {
-			makeRequest(host, port, "leave", "POST", {game: this.gameId, nick: this.userName, pass: this.password},(status, data) => {
+			makeRequest("leave", "POST", {game: this.gameId, nick: this.userName, pass: this.password},(status, data) => {
 			})
 		}
 		else {
@@ -462,7 +464,7 @@ NimGame.prototype.gameFinished = function(iWon, iGaveUp, data){
 }
 
 NimGame.prototype.cancelMatchMaking = function(){
-	makeRequest(host, port, "leave", "POST", {game: this.gameId, nick: this.userName, pass: this.password},(status, data) => {
+	makeRequest("leave", "POST", {game: this.gameId, nick: this.userName, pass: this.password},(status, data) => {
 		console.log("matchmaking was canceled");
 		console.log(data);
 		playingGame = false;
@@ -541,9 +543,9 @@ NimGame.prototype.makePlay = function(play){
 		this.gameFinished(this.myTurn,false);
 		return;
 	}
-	this.myTurn = !this.myTurn;
 	this.writeTurn();
-
+	this.myTurn = !this.myTurn;
+	
 	if(this.myTurn) {
 		this.writePlay(play, 'You')
 		this.howManyPlays++
@@ -553,24 +555,8 @@ NimGame.prototype.makePlay = function(play){
 		}
 	}
 	else {
-		this.opponentName(play, this.opponentName)
-	}
-	if(this.mode == "Computer"){
-		
-		
-		if(this.myTurn){
-			this.appendVerbose("You played in column "+play.column+" and removed "+play.removeCount+" balls.","#3889EA");
-			this.howManyPlays++;
-			
-		}
-		else{				
-			this.myTurn = !this.myTurn;
-			this.writeTurn();
-			this.appendVerbose("The opponent played in column "+play.column+" and removed "+play.removeCount+" balls.","#b4b4b4");
-		}		
-		
+		this.writePlay(play, this.opponentName)
 	}	
-	
 }
 
 NimGame.prototype.initializeDOM = function(){
