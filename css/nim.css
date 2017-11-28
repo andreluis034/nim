@@ -733,6 +733,10 @@ option.placeholder {
 
 .alert {
     color: red;
+    text-align: center;
+    width: 40%;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .onlineEnding {
@@ -807,7 +811,7 @@ option.placeholder {
     border-width: 1px;
     border-color: #dfdfdf;
     width: 740px;
-    height: 480px;
+    height: 520px;
     margin-left: auto;
     margin-right: auto;
     z-index: 101;
@@ -853,4 +857,23 @@ option.placeholder {
 }
 #leaderboard > .mode.active {
     color: #3889EA;
+}
+
+.timerCanvas{
+    float:right;
+    border: 1px solid #e8e8e8;
+    background-color: #ffffff;
+    width: 75px;
+    height: 75px;
+    margin-top: 41px;
+    /* margin-bottom: 1%; */
+    /* margin-left: auto; */
+    margin-right: 165px;
+
+}
+
+#game-content > .container {
+    width: 800px;
+    margin-right: auto;
+    margin-left: auto;
 }

@@ -175,7 +175,6 @@ function NimGame(mode,columnCount, difficultyName, meFirst, domElement,userName,
 	}else {
 		this.meFirst = meFirst;
 		(this.meFirst == "enemyFirst") ? this.myTurn = false : this.myTurn = true;
-		console.log("NO INICIO: "+this.myTurn);
 		this.howManyPlays = 0;
 		this.difficultyName = difficultyName;
 		this.difficulty = this.difficulties[difficultyName];
@@ -224,6 +223,12 @@ NimGame.prototype.onReceiveUpdate = function(data){
 		}
 		this.myTurn = data.turn === this.userName
 		this.writeTurn()
+		if(!this.myTurn){
+			this.timer.freeze();
+		}
+		else{
+			this.timer.unFreeze();
+		}
 		console.log(data.turn)
 		console.log(this.userName)
 		if(data.stack !== undefined && data.pieces !== undefined){
@@ -481,7 +486,9 @@ NimGame.prototype.createConnecting = function(){
 }
 
 NimGame.prototype.toggleConnecting = function(){
+	this.timer = new Timer(2,0,this.timerCanvas,75);
 	this.spanner.style.display = "none";
+	this.timerCanvas.style.display = "block";
 }
 
 NimGame.prototype.showAlert = function(message){
@@ -525,11 +532,12 @@ NimGame.prototype.makePlay = function(play){
 		this.gameFinished(this.myTurn,false);
 		return;
 	}
-	this.writeTurn();
 	this.myTurn = !this.myTurn;
+	this.writeTurn();
 	
-	if(this.myTurn) {
-		this.writePlay(play, 'You')
+	
+	if(!this.myTurn) {
+		this.writePlay(play,this.opponentName,"#b4b4b4")
 		this.howManyPlays++
 		if(this.isOffline) {
 			var context = this;
@@ -537,7 +545,10 @@ NimGame.prototype.makePlay = function(play){
 		}
 	}
 	else {
-		this.writePlay(play, this.opponentName)
+		if(!this.isOffline){
+			this.timer.resetTimer();
+		}
+		this.writePlay(play,'You',"#3889EA")
 	}	
 }
 
@@ -656,7 +667,22 @@ NimGame.prototype.initializeDOM = function(){
 	buttonContainer.appendChild(playAgainButton)
 	
 	// -------------------- //
+
+	//Timer if the game mode is online:
+
+
+	if(!this.isOffline){
+		this.timerCanvas = document.createElement('div');
+		this.timerCanvas.className = "timerCanvas"
+		this.timerCanvas.style.display = "none";
+	}
+
+	
+
+	// -------------------- //
+
 	this.boardContainer.appendChild(this.turn);
+	if(!this.isOffline){this.boardContainer.appendChild(this.timerCanvas);}
 	this.boardContainer.appendChild(this.alert);
 	this.boardContainer.appendChild(this.canvas);
 	this.boardContainer.appendChild(this.verboseCanvas);

@@ -1,23 +1,18 @@
 "use strict";
 
-var timerContext;
-
 function Timer(minutes,seconds,domEllement,size){
 
 	this.minutesLock = minutes;
 	this.secondsLock = seconds;
-
-	timerContext = this;
-
+	this.frozen = false;
 	this.canvas = document.createElement('canvas');
-	this.canvas.id = "canvasID";
 	this.canvas.width = size;
 	this.canvas.height = size;
 	domEllement.appendChild(this.canvas);
 
 	this.context=this.canvas.getContext("2d");
 
-	this.initializeStyle(size,"#3889EA","#e9e9e9",5,60);
+	this.initializeStyle(size,"#3889EA","#e9e9e9",5,20);
 	
 	this.totalTime = (minutes*60+seconds)*1000;
 	this.startTime = new Date().getTime();
@@ -27,6 +22,18 @@ function Timer(minutes,seconds,domEllement,size){
 	this.minutes = minutes;
 	this.seconds = seconds;
 	this.circleInterval = 2*Math.PI;
+
+	var timerContext = this;
+
+	this.runTimer = setInterval(function(){
+		if(!this.frozen){
+			var currentTime = new Date().getTime();
+			var distance = timerContext.endTime-currentTime;
+			distance = Math.round(distance / 100) * 100;
+			timerContext.minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+			timerContext.seconds = Math.floor((distance % (1000 * 60)) / 1000);
+		}	
+	},1000);
 
 	this.drawTimer();
 }
@@ -51,6 +58,8 @@ Timer.prototype.clearCanvas = function(){
 }
 
 Timer.prototype.resetTimer = function(){
+	this.startTime = new Date().getTime();
+	this.currentTime = this.startTime;
 	this.minutes = this.minutesLock;
 	this.seconds = this.secondsLock;
 	this.endTime = this.currentTime + (60*this.minutes+this.seconds)*1000;
@@ -65,6 +74,17 @@ Timer.prototype.writeTime = function(){
   	}
 }
 
+Timer.prototype.freeze = function(){
+	this.resetTimer();
+	this.frozen = true;
+}
+
+Timer.prototype.unFreeze = function(){
+	this.frozen = false;
+	this.resetTimer();
+	this.drawTimer();
+}
+
 Timer.prototype.drawArc = function(start,end,color){
 	this.context.strokeStyle = color;
 	this.context.arc(this.center,this.center,this.radius,start,end);
@@ -74,6 +94,7 @@ Timer.prototype.drawArc = function(start,end,color){
 }
 
 Timer.prototype.drawTimer = function(){
+
 
 	this.clearCanvas();
 	this.writeTime();	
@@ -90,14 +111,17 @@ Timer.prototype.drawTimer = function(){
 
 	this.drawArc(1.5*Math.PI+increase,1.5*Math.PI,this.negativeColor);
 
-	window.requestAnimationFrame(this.drawTimer.bind(this));
+
+	if(!this.frozen){
+		window.requestAnimationFrame(this.drawTimer.bind(this));
+	}
+
+	else{
+		this.clearCanvas();
+		this.context.fillStyle = this.negativeColor;
+		this.writeTime();
+		this.context.fillStyle = this.positiveColor;
+		this.drawArc(-0.5*Math.PI,1.5*Math.PI,this.negativeColor);
+	}
+
 }
-
-
-this.runTimer = setInterval(function(){
-	var currentTime = new Date().getTime();
-	var distance = timerContext.endTime-currentTime;
-	distance = Math.round(distance / 100) * 100;
-	timerContext.minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-	timerContext.seconds = Math.floor((distance % (1000 * 60)) / 1000);
-},1000);
