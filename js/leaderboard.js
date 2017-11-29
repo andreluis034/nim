@@ -1,31 +1,29 @@
 var leaderboard = [
-	{name: "Fayaru", 			np: 1337},
-	{name: "Arukiap", 			np: 1336},
-	{name: "boilknote", 		np: 213},
-	{name: "yat0++",			np: 37},
-	{name: "El_Rocha", 			np: 20},
-	{name: "Eirne", 			np: 10}
+
 ]
 var supportStorage = ((typeof window.localStorage) !== 'undefined')
 
-
+var isOfflineActive = true
 /**
  * Creates a leaderboard on the given div(tbody)
  * @param {HTMLTableSectionElement} div 
+ * @param {*} leadeboar
  */
-function buildLeaderboard(div)
+function buildLeaderboard(div, leadeboar)
 {
 	while(div.firstChild)
 		div.removeChild(div.firstChild)
 		
-	for(var i = 0; i < leaderboard.length; ++i) {
+	console.log(leadeboar.length)
+	for(var i = 0; i < leadeboar.length; ++i) {
+		console.log(i)
 		var elem = document.createElement('tr')
 		var user = document.createElement('th')
 		var np = document.createElement('th')
 		user.className = 'user'
-		user.textContent = leaderboard[i].name
+		user.textContent = leadeboar[i].nick
 		np.className = 'victories'
-		np.textContent = leaderboard[i].np
+		np.textContent = isOfflineActive ? leadeboar[i].np : leadeboar[i].victories
 		elem.appendChild(user)
 		elem.appendChild(np)
 		div.appendChild(elem)
@@ -34,28 +32,62 @@ function buildLeaderboard(div)
 }
 
 /**
- * 
+ * @param {NimGame} game
  * @param {String} username 
- * @param {Number} points 
+ * @param {Number} pointsWon
+ * @param {Boolean} iGaveup
  */
-function OnGameFinished(username, points) {
+function OnGameFinished(game, username, pointsWon, iGaveUp){
+	if(!game.isOffline || iGaveUp)
+		return
 	var foundUser = false;
 	for(var i = 0; i < leaderboard.length; i++) {
 		console.log(leaderboard[i])
-		if(leaderboard[i].name === username) {
-			leaderboard[i].np = parseFloat(leaderboard[i].np) +  points
+		if(leaderboard[i].nick === username) {
+			leaderboard[i].np = parseFloat(leaderboard[i].np) +  pointsWon
 			foundUser = true;
 			break;
 		}
 	}
 	if(!foundUser) {
-		leaderboard.push({name: username, np: points})
+		leaderboard.push({nick: username, np: pointsWon})
 	}
 	leaderboard.sort((a,b) => {
 		return b.np-a.np
 	})
 	if(supportStorage)
 		window.localStorage.setItem('leaderboard', JSON.stringify(leaderboard))
+}
+
+/**
+ * Handles the load of the leaderboard page
+ */
+function OnLeaderBoardPageLoad() {
+	var leaderboardElement = document.getElementById('big-leaderboard');
+	if(isOfflineActive)
+		buildLeaderboard(leaderboardElement, leaderboard)
+	else {
+		makeRequest("ranking", "POST", {size: 10}, (status, data) => {
+			console.log(data.ranking)
+			if(data.error)
+				return
+			buildLeaderboard(leaderboardElement, data.ranking)
+		})
+	}
+}
+
+function OnChangeLeaderboardType(type) {
+	if(type === "offline") {
+		document.getElementById('offline-lb').className = "mode active"
+		document.getElementById('online-lb').className = "mode"
+		isOfflineActive = true
+	}
+	else {
+		document.getElementById('offline-lb').className = "mode"
+		document.getElementById('online-lb').className = "mode active"
+		isOfflineActive = false
+	}
+	navigate("#/leaderboard")
 }
 
 if(supportStorage) {

@@ -96,6 +96,7 @@ body {
 	background: #e9e9e9;
     width: 100%;
     position: absolute;
+    z-index: 200;
 }
 
 .header  .center {
@@ -183,11 +184,11 @@ hr.general {
     width: 100%;
 }
 
-#verbose_button:hover {
+.button.verbose:hover {
     background-color: #3889EA;
     
 }
-#verbose_button {
+.button.verbose {
     background-color: #b4b4b4;
     line-height: 23px;
     margin-top: 5px;
@@ -195,10 +196,10 @@ hr.general {
     margin-right: auto;
     height: 20px;
 }
-#giveup_button:hover {
+.button.giveup:hover {
     background-color: #e4431f ;
 }
-#giveup_button {
+.button.giveup {
     background-color: #b4b4b4;
     line-height: 45px; 
     margin-top: 5px;
@@ -207,13 +208,15 @@ hr.general {
     height: 50px;
 }
 
-#play_again_button {
+
+.button.left {
     float: left;
-    text-align: center;
 }
-#change_settings_button {
+.button.center {
+    float: left;
+}
+.button.right {
     float: right;
-    text-align: center;
 }
 .button.fullwidth {
     width: 100% !important;
@@ -232,6 +235,13 @@ hr.general {
     margin-left: auto;
     margin-right: auto;
     padding: 2%;
+}
+
+.container.log-in > h2 {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 1em;
+    color: red !important;
 }
 
 .container.log-in > .user {
@@ -275,6 +285,18 @@ hr.general {
     line-height: 60px; 
     padding-left: 30px; 
     font-size: 2em;
+}
+
+#playOrder {
+    display: none;
+}
+
+#gamedifficulty {
+    display: none;
+}
+
+#groupnumber {
+    display: none;
 }
 
 .container.log-in > .user:hover {
@@ -392,6 +414,7 @@ option.placeholder {
     width: 100%;
     bottom: 0px;
     background: #e9e9e9;
+    z-index: 200;
 }
 .footer>.center {
     margin-top: 11px;
@@ -441,7 +464,7 @@ option.placeholder {
 
 /*---- CANVAS ----*/
 
-#turn {
+.turn {
     text-align: center;
     font-family: novecento_sans_bookbold;
     margin-bottom: 0;
@@ -451,7 +474,8 @@ option.placeholder {
 .canvas{
     border: 1px solid #e8e8e8;
     background-color: #ffffff;
-    width: auto;
+    /*width: auto;
+    height: 1200px;*/
     margin-top: 2%;
     margin-left: auto;
     margin-right: auto;
@@ -460,9 +484,7 @@ option.placeholder {
 
 .ball{
     border-radius: 200px;
-    height: 100px;
-    width: 100px;
-    background-color: #ffffff; 
+    background-color: #3889EA;
     cursor: pointer;
 }
 
@@ -473,11 +495,6 @@ option.placeholder {
     color: #b4b4b4;
 }
 
-#table{
-    margin-left: auto;
-    margin-right: auto;
-}
-
 
 #verbose-messages {
     vertical-align: top;
@@ -485,7 +502,7 @@ option.placeholder {
     margin-top: 0;
 }
 
-#verbose{
+.verbose{
     /*display: none;*/
     margin-left: auto;
     margin-right: auto;
@@ -494,7 +511,7 @@ option.placeholder {
     height: 100px;
 }
 
-#verbose_chat  p {
+.verbose p {
     font-size: 15px;
     font-family: novecento_sansmedium, Arial, Helvetica, sans-serif;
 }
@@ -508,7 +525,7 @@ option.placeholder {
     overflow-x:hidden;
 }
 
-#points_board{
+.points_board{
     width: 40%;
     margin-left: auto;
     margin-right: auto;
@@ -602,6 +619,7 @@ option.placeholder {
     color: red;
     font-family: novecento_sansmedium, Arial, Helvetica, sans-serif;
 }
+
 #button_yes:hover {
     background-color: #e4431f;
 }
@@ -646,4 +664,216 @@ option.placeholder {
 
 #giveup_score_img {
     width: 700px;
+}
+
+
+/*here lies gud css*/
+
+.stack {    
+    /*display: inline-block;*/
+    vertical-align: bottom;
+    display: inline-flex;
+    flex-direction: column-reverse;
+    background-color: #FFF;
+    margin-top: auto;
+}
+
+.spanner {
+    background-color: rgba(0, 0, 0, 0.2);
+    position:absolute;
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    width:100%;
+    z-index:100;
+}
+
+.prompt {
+    background-color: #ffffff;
+    opacity: 1;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    height: 160px;
+    width: 340px;
+    margin-top: -130px;
+    margin-left: -170px;
+    z-index: 101;
+}
+
+.promptH2{
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.95312em;
+    font-family: novecento_sansmedium;
+    line-height: 1.2;
+    color: #3889EA;
+    margin: 10px;
+}
+
+.promptH3{
+    margin-top: 0;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1em;
+    font-family: novecento_sansmedium;
+    line-height: 1.2;
+    color: #b4b4b4;
+}
+
+.prompt .button {
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #b4b4b4;
+}
+
+.prompt .button:hover{
+    background-color: #e4431f ;
+}
+
+.alert {
+    color: red;
+    text-align: center;
+    width: 40%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.onlineEnding {
+    position: relative;
+    height: 260px;
+    width: 740px;
+    background-color: #ffffff;
+    border: solid;
+    border-width: 1px;
+    border-color: #dfdfdf;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 200px;
+}
+
+.onlineEndingH1 {
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.95312em;
+    font-family: novecento_sansmedium;
+    line-height: 1.2;
+    margin: 10px;
+    margin-top: 30px;
+}
+
+.onlineEnding .button {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    width: 55%;
+}
+
+.giveUpPrompt {
+    background-color: #ffffff;
+    opacity: 1;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    height: 260px;
+    width: 500px;
+    margin-top: -180px;
+    margin-left: -250px;
+    z-index: 101;
+}
+
+.giveUpPrompt > h1{
+   text-align: center;
+    font-weight: 700;
+    font-size: 1.95312em;
+    font-family: novecento_sans_bookbold;
+    line-height: 1.2;
+    color: #3889EA;
+    margin: 10px;
+    margin-top: 30px;
+}
+
+.giveUpPrompt .button {
+    background-color: #b4b4b4;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    width: 55%;
+}
+
+.giveUpPrompt .button:hover {
+    background-color: #3889EA;
+}
+
+.pointsBoard {
+    background-color: #ffffff;
+    border: solid;
+    border-width: 1px;
+    border-color: #dfdfdf;
+    width: 740px;
+    height: 520px;
+    margin-left: auto;
+    margin-right: auto;
+    z-index: 101;
+}
+
+.pointsBoard .button {
+    margin: 20px;
+    width: 44.5%;
+}
+
+.pointsBoard > hr{
+    border-style: none;
+    background-color: #b4b4b4; 
+    height: 2px;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.pointsBoard > h1{
+    font-family: novecento_sans_bookbold;
+    color: #3889EA;
+}
+
+.pointsBoard > h2,h3{
+    font-family: novecento_sansmedium;
+    color: #b4b4b4;
+}
+
+#leaderboard > .mode {
+    float: left;
+    border: 1px solid #e8e8e8;
+    border-bottom: none;
+    font-size: 1.3em;
+    padding-left: 20px;
+    padding-right: 20px;
+    background: #fff;
+    color: #333;
+    cursor: pointer;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-family: novecento_sansmedium, Arial, Helvetica, sans-serif;
+}
+#leaderboard > .mode.active {
+    color: #3889EA;
+}
+
+.timerCanvas{
+    float:right;
+    border: 1px solid #e8e8e8;
+    background-color: #ffffff;
+    width: 75px;
+    height: 75px;
+    margin-top: 41px;
+    /* margin-bottom: 1%; */
+    /* margin-left: auto; */
+    margin-right: 165px;
+
+}
+
+#game-content > .container {
+    width: 800px;
+    margin-right: auto;
+    margin-left: auto;
 }
