@@ -236,6 +236,7 @@ NimGame.prototype.onReceiveUpdate = function(data){
 			//new play update being received
 			var ballsRemoved = this.columns[data.stack].balls.length-data.pieces;
 			var play = new NimPlay(data.stack,ballsRemoved);
+			this.myTurn = !this.myTurn;
 			this.makePlay(play);
 		}
 		
@@ -445,7 +446,7 @@ NimGame.prototype.gameFinished = function(iWon, iGaveUp, data, winner){
 		}
 
 	}
-	//	OnGameFinished(this.userName, totalPoints); //TODO
+	
 	
 	for(var i = this.events.gameFinish.length - 1; i >= 0; --i){
 		this.events.gameFinish[i](this, winner, points, iGaveUp)
@@ -679,6 +680,8 @@ NimGame.prototype.initializeDOM = function(){
 	if(!this.isOffline){
 		this.timerCanvas = document.createElement('div');
 		this.timerCanvas.className = "timerCanvas"
+		console.log(145-this.columnNumber+"px");
+		this.timerCanvas.style.marginRight = 165-this.columnNumber+"px";
 		this.timerCanvas.style.display = "none";
 	}
 
@@ -687,7 +690,9 @@ NimGame.prototype.initializeDOM = function(){
 	// -------------------- //
 
 	this.boardContainer.appendChild(this.turn);
-	if(!this.isOffline){this.boardContainer.appendChild(this.timerCanvas);}
+	if(!this.isOffline){
+		this.boardContainer.appendChild(this.timerCanvas);
+	}
 	this.boardContainer.appendChild(this.alert);
 	this.boardContainer.appendChild(this.canvas);
 	this.boardContainer.appendChild(this.verboseCanvas);

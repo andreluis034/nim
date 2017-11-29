@@ -1,4 +1,4 @@
-const host = "twserver.alunos.dcc.fc.up.pt"
+const host = "tarado.mooo.com"
 const port = 8008;
 const NimApi =  {
     
