@@ -418,6 +418,7 @@ NimGame.prototype.showOfflinePoints = function(iWon, iGaveUp) {
 	buttonContainer.appendChild(changeSettignsButton)
 	buttonContainer.appendChild(playAgainButton)
 	this.pointsBoard.appendChild(buttonContainer)
+	return totalPoints
 }
 
 
@@ -426,11 +427,12 @@ NimGame.prototype.showOfflinePoints = function(iWon, iGaveUp) {
  * @param {Boolean} iWon 
  * @param {Boolean} iGaveUp 
  * @param {*} data - The Online data representing the game
+ * @param {String} winner - The winning player
  */
-NimGame.prototype.gameFinished = function(iWon, iGaveUp, data){
-	
+NimGame.prototype.gameFinished = function(iWon, iGaveUp, data, winner){
+	var points = 0
 	if(this.isOffline){
-		this.showOfflinePoints(iWon, iGaveUp);
+		points = this.showOfflinePoints(iWon, iGaveUp);
 	}
 	
 	else{
@@ -446,7 +448,7 @@ NimGame.prototype.gameFinished = function(iWon, iGaveUp, data){
 	//	OnGameFinished(this.userName, totalPoints); //TODO
 	
 	for(var i = this.events.gameFinish.length - 1; i >= 0; --i){
-		this.events.gameFinish[i](this, iWon, iGaveUp)
+		this.events.gameFinish[i](this, winner, points, iGaveUp)
 	}
 	
 }
@@ -530,7 +532,7 @@ NimGame.prototype.makePlay = function(play){
 	this.cleanAlert();
 	
 	if(this.isOffline && this.isOver()) {
-		this.gameFinished(this.myTurn,false);
+		this.gameFinished(this.myTurn,false,undefined, this.userName);
 		return;
 	}
 	

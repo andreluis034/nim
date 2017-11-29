@@ -86,7 +86,7 @@ const pages = {
 				console.log("----------------------------------");
 
 				var game = new NimGame(gameType,columns,difficulty,playingFirst,domElement,loginInfo.username,group,loginInfo.password);
-
+				game.on('gameFinish', OnGameFinished)
 				
 			}
 			bigHeaderHandler(false)

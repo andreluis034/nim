@@ -1,10 +1,5 @@
 var leaderboard = [
-	{nick: "Fayaru", 			np: 1337},
-	{nick: "Arukiap", 			np: 1336},
-	{nick: "boilknote", 		np: 213},
-	{nick: "yat0++",			np: 37},
-	{nick: "El_Rocha", 			np: 20},
-	{nick: "Eirne", 			np: 10}
+
 ]
 var supportStorage = ((typeof window.localStorage) !== 'undefined')
 
@@ -37,22 +32,25 @@ function buildLeaderboard(div, leadeboar)
 }
 
 /**
- * 
+ * @param {NimGame} game
  * @param {String} username 
- * @param {Number} points 
+ * @param {Number} pointsWon
+ * @param {Boolean} iGaveup
  */
-function OnGameFinished(username, points) {
+function OnGameFinished(game, username, pointsWon, iGaveUp){
+	if(!game.isOffline || iGaveUp)
+		return
 	var foundUser = false;
 	for(var i = 0; i < leaderboard.length; i++) {
 		console.log(leaderboard[i])
-		if(leaderboard[i].name === username) {
-			leaderboard[i].np = parseFloat(leaderboard[i].np) +  points
+		if(leaderboard[i].nick === username) {
+			leaderboard[i].np = parseFloat(leaderboard[i].np) +  pointsWon
 			foundUser = true;
 			break;
 		}
 	}
 	if(!foundUser) {
-		leaderboard.push({name: username, np: points})
+		leaderboard.push({nick: username, np: pointsWon})
 	}
 	leaderboard.sort((a,b) => {
 		return b.np-a.np
