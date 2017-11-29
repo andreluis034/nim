@@ -64,10 +64,12 @@ function OnGameFinished(game, username, pointsWon, iGaveUp){
  */
 function OnLeaderBoardPageLoad() {
 	var leaderboardElement = document.getElementById('big-leaderboard');
-	if(isOfflineActive)
+	if(isOfflineActive) {
+		document.getElementById('rankingSize').style.display = "none"
 		buildLeaderboard(leaderboardElement, leaderboard)
+	}
 	else {
-		makeRequest("ranking", "POST", {size: 10}, (status, data) => {
+		makeRequest("ranking", "POST", {size: document.getElementById('rankingSize').value}, (status, data) => {
 			console.log(data.ranking)
 			if(data.error)
 				return
@@ -78,15 +80,18 @@ function OnLeaderBoardPageLoad() {
 
 function OnChangeLeaderboardType(type) {
 	if(type === "offline") {
+		document.getElementById('rankingSize').style.display = "none"
 		document.getElementById('offline-lb').className = "mode active"
 		document.getElementById('online-lb').className = "mode"
 		isOfflineActive = true
 	}
 	else {
+		document.getElementById('rankingSize').style.display = "block"
 		document.getElementById('offline-lb').className = "mode"
 		document.getElementById('online-lb').className = "mode active"
 		isOfflineActive = false
 	}
+	console.log('HELLO')
 	navigate("#/leaderboard")
 }
 

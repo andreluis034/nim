@@ -322,6 +322,11 @@ var FormEvents = [
 		elemId: 'online-lb',
 		eventName: 'click',
 		callback: () => {OnChangeLeaderboardType("online")} 
+	}, 
+	{
+		elemId: 'rankingSize',
+		eventName: 'change',
+		callback: () => {OnChangeLeaderboardType("online")}
 	}
 ]
 var initialPageNotAllowed = ['#/game', '#/logout']
