@@ -532,8 +532,8 @@ NimGame.prototype.makePlay = function(play){
 		this.gameFinished(this.myTurn,false);
 		return;
 	}
-	this.myTurn = !this.myTurn;
 	this.writeTurn();
+	this.myTurn = !this.myTurn;
 	
 	
 	if(!this.myTurn) {
