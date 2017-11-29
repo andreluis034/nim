@@ -151,6 +151,7 @@ function NimGame(mode,columnCount, difficultyName, meFirst, domElement,userName,
 	this.isOffline = this.mode === "Computer";
 	this.userName = userName;
 	this.columnNumber = columnCount;
+	console.log(columnCount)
 	this.verboseMode = false;
 	this.columns = Array(columnCount).fill(0);
 	this.limits = Array(columnCount).fill(0);
@@ -532,24 +533,26 @@ NimGame.prototype.makePlay = function(play){
 		this.gameFinished(this.myTurn,false);
 		return;
 	}
-	this.writeTurn();
-	this.myTurn = !this.myTurn;
 	
 	
 	if(!this.myTurn) {
+		if(!this.isOffline){
+			this.timer.resetTimer();
+		}
 		this.writePlay(play,this.opponentName,"#b4b4b4")
+	}
+	else {
+
 		this.howManyPlays++
+		this.writePlay(play,'You',"#3889EA")
 		if(this.isOffline) {
 			var context = this;
 			setTimeout(function(){context.makePlay(context.getAiPlay());}, aiThinkTime);
 		}
-	}
-	else {
-		if(!this.isOffline){
-			this.timer.resetTimer();
-		}
-		this.writePlay(play,'You',"#3889EA")
 	}	
+	this.myTurn = !this.myTurn;
+	this.writeTurn();
+	
 }
 
 NimGame.prototype.initializeDOM = function(){
