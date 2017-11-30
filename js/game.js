@@ -252,7 +252,10 @@ NimGame.prototype.onReceiveUpdate = function(data){
 NimGame.prototype.joinGame = function(){
 	makeRequest("join", "POST", {group: this.groupNumber, nick: this.userName, pass: this.password, size: this.columnNumber},(status, data) => {
 		if(data.error){
-			console.log(data.error);
+			playingGame = false;
+			navigate("#");
+			alert(data.error);
+			//console.log(data.error);
 		}
 		else{
 			this.gameId = data.game;
@@ -272,8 +275,8 @@ NimGame.prototype.initializeServerEventListener = function(gameId){
 			return
 		if(!this.isConnected){
 			//here we let the user know somebody is ready to play.
-			this.isConnected = true;
-			context.toggleConnecting();
+				this.isConnected = true;
+				context.toggleConnecting();		
 		}
 
 		var data = JSON.parse(event.data);
