@@ -34,7 +34,7 @@
 						</a>
 					</div>
 					<form action="#" method="post" id="startGame">
-						<input class="text" id="boardsize" type="number" name="quantity" min="3" max="50" placeholder="Board size">
+						<input class="text" required id="boardsize" type="number" name="quantity" min="3" max="50" placeholder="Board size">
 						<select class="text" id="adversary">
 							<option class="placeholder" value="" selected disabled>Adversary</option>
 							<option value="Computer">Computer</option>
@@ -52,7 +52,7 @@
 							<option value="heroic">Heroic</option>
 							<option value="legendary">Legendary</option>
 						</select>
-						<input class="text" id="groupnumber" type="number" min="0" name="group" placeholder="Group Number">
+						<input class="text" required id="groupnumber" type="number" min="0" name="group" placeholder="Group Number">
 						<div class="form-buttons">
 							<input class="button fullwidth" type="submit" value="Play">
 						</div>
